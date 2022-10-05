@@ -11,6 +11,10 @@ public class TradeResult {
 	private int tradeMinimumValueDifference;
 	private int tradeMaximumValueDifference;
 	private int tradeWarningLevel;
+	private String timeStampCalculated;
+	private String checksum;
+	
+	
 	
 	
 }
