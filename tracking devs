@@ -1,0 +1,120 @@
+GDSRT:
+
+Java,
+Types of trackers:
+    - Other "Trade" actions: Gold/Currency/Items
+	- Trades through: Gold/Currency/Items
+	- Trades through AH systems(maybe)
+	- Stats/Values/Experience
+	- If time/want: Realtime tracking: movement, skill usage, etc
+
+How to track:
+	General idea:
+		Each "account" or "player id" has several levels of "threat", ranging from 0-10.
+		All accounts start from 0, and graduially begins to build levels, as suspicious actions occur.
+		All "ratings" of possibly cheats should be marked with a percentage. Meaning if a trade was over with 1%, it should be deemed alot less. But
+		say if 200m currency was given freely, it should be marked alot harder.
+	For Gold/Current/Items trading:
+		First calculate the values of each side of the trade, if around the same, put in "good"
+		If the values are off, check the "reliability" of the prices, are they traded alot, recent etc? If they are reasonable, and the trade is determinated "too unfair",
+			put in "questionable" increase the accounts "threat".
+		At an interval, during the next few days, check the trades that were deemed "questionable" with new validations of pricing, and possibly adjust the "questionable"
+			if it doesnt seem to be a "questionable" anymore.
+		
+	For Stats/Values/Experience:
+		For each, establish an "appropriate" baseline, and throughout update. Any updates to a playesr value should be given with a time-parameter, so it can be matched with, meaning if experience has increased by 
+			10k in the last 2 hours, 10k and 2h need to be given, otherwise any kind of analysis can't be done.
+		After etablishing a baseline, compare the given exp rates with the time-frame given, and then make analysis based on base-lines.
+	
+	For trades through AH:
+		Baseline of items, any outliers will be marked.
+
+
+How to link:
+	Few options:
+		1. Each item have a list of where it was received from. (Gold mighgt be challenging, but i guess it could have?)
+		2. When a account is "tracked" just backtrack through all trades, can possibly just see
+			This player have done x trades, these trades were "questionable", and the players will then recursively go through, until all "questionable trades" are done.
+		3. When a "questionable" trade is done, a player is "linked" with that person, and then when a player is caught, the links from player-player is revealed
+			If a trade should be deemed not "questionable" anymore, this link will disipate, assuming thats the only one.
+
+Few general solutions:
+	1. The analysis program just gets access to a database, and the user selects certain tables, and what type they are, and the script will try and "translate" to it's own language
+		Cons:
+			Very inaccurate
+			Database has to be pristine and super detailed
+			Prone to not working since it's not standardized
+		Pros:
+			No need for protocol transfers
+	2. The analysis program is directly communicated with and is fed the required data in tha right structure
+		Cons:
+			Harder to utilize
+			More rights have to be integrated
+			Protocol transfers
+		Pros:
+			Accurate
+			Will work as the data is standardized
+	3. Mixture of 1 & 2, will read the database as good as it can, and also be fed additional data.
+		Cons:
+			Yep
+		Pros:
+			Yep
+Protocol options:
+	If protocol is needed:
+		Generate public/private, and then you use the public to all the data-transfers. On the way back with the data, dunno.
+
+
+
+Outward data:
+	Analysis program gives a "state" of the found out solutions, and then somewhere to iteract with.. Hmm... Maybe spring boot rest api, then you have different
+	api calls you can make.
+
+
+Production:
+	Application will be dockerised and can be launched anywhere, and customized. Initially you have to write properties for it, which then can be used. Also selection of which
+		trackers/loggers to use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
