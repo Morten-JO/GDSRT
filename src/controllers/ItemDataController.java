@@ -21,12 +21,15 @@ public class ItemDataController {
 	 * @param value
 	 * @return
 	 */
-	public void addItem(String itemId, int value) {
+	public ItemData addItem(String itemId, int value, Percentage itemCertaintyPercentage) {
 		if(itemDataMap.containsKey(itemId)) {
 			System.out.println("Already here");
 			ItemData data = itemDataMap.get(itemId);
 			data.incrementTotalTrades();
-			//TODO
+			if(data.getItemValueCertaintyPercentage().getPercentage() < itemCertaintyPercentage.getPercentage()) {
+				data.getItemValueCertaintyPercentage().setPercentage(itemCertaintyPercentage.getPercentage());
+			}
+			return data;
 		} else {
 			System.out.println("Not here");
 			ItemData data = new ItemData();
@@ -34,10 +37,11 @@ public class ItemDataController {
 			data.setEstimatedMinimumPrice(value);
 			data.setEstimatedMedianPrice(value);
 			data.setItemId(itemId);
-			data.setItemValueCertaintyPercentage(new Percentage(0));
+			data.setItemValueCertaintyPercentage(itemCertaintyPercentage);
 			data.setRecentTradeValues(new int[] {value});
 			data.setTotalTrades(1);
 			itemDataMap.put(itemId, data);
+			return data;
 		}
 	}
 	
