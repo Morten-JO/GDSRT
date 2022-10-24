@@ -30,6 +30,16 @@ public class TradeResult {
 		this.checksum = checksum;
 	}
 	
+	public TradeResult(TradeCalculated res, float median, float minimum, float maximum, int level, String checksum) {
+		this.tradeCalculated = res;
+		this.tradeMedianValueDifference = (int)median;
+		this.tradeMinimumValueDifference = (int)minimum;
+		this.tradeMaximumValueDifference = (int)maximum;
+		this.tradeWarningLevel = level;
+		this.timeStampCalculated = DateStamper.getStampedDate();
+		this.checksum = checksum;
+	}
+	
 	public TradeCalculated getTradeCalculated() {
 		return tradeCalculated;
 	}

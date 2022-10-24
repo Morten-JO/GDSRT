@@ -1,5 +1,6 @@
 package dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Trade {
@@ -58,6 +59,13 @@ public class Trade {
 
 	public void setTradeResult(TradeResult tradeResult) {
 		this.tradeResult = tradeResult;
+	}
+	
+	public List<TradeItem> getBothTradeItems(){
+		List<TradeItem> list = new ArrayList<>();
+		list.addAll(itemsOne);
+		list.addAll(itemsTwo);
+		return list;
 	}
 	
 	

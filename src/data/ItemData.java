@@ -5,9 +5,7 @@ import dto.Percentage;
 public class ItemData {
 
 	private String itemId;
-	private float estimatedMinimumPrice;
-	private float estimatedMaximumPrice;
-	private float estimatedMedianPrice;
+	private PricePoint estimatedPrice = new PricePoint();
 	private int[] recentTradeValues;
 	private int totalTrades;
 	private Percentage itemValueCertaintyPercentage;
@@ -17,23 +15,8 @@ public class ItemData {
 	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
-	public float getEstimatedMinimumPrice() {
-		return estimatedMinimumPrice;
-	}
-	public void setEstimatedMinimumPrice(float estimatedMinimumPrice) {
-		this.estimatedMinimumPrice = estimatedMinimumPrice;
-	}
-	public float getEstimatedMaximumPrice() {
-		return estimatedMaximumPrice;
-	}
-	public void setEstimatedMaximumPrice(float estimatedMaximumPrice) {
-		this.estimatedMaximumPrice = estimatedMaximumPrice;
-	}
-	public float getEstimatedMedianPrice() {
-		return estimatedMedianPrice;
-	}
-	public void setEstimatedMedianPrice(float estimatedMedianPrice) {
-		this.estimatedMedianPrice = estimatedMedianPrice;
+	public PricePoint getEstimatedPrice() {
+		return estimatedPrice;
 	}
 	public int[] getRecentTradeValues() {
 		return recentTradeValues;
@@ -53,7 +36,6 @@ public class ItemData {
 	public void setItemValueCertaintyPercentage(Percentage itemValueCertaintyPercentage) {
 		this.itemValueCertaintyPercentage = itemValueCertaintyPercentage;
 	}
-	
 	public void incrementTotalTrades() {
 		totalTrades++;
 	}

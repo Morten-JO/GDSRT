@@ -33,9 +33,9 @@ public class ItemDataController {
 		} else {
 			System.out.println("Not here");
 			ItemData data = new ItemData();
-			data.setEstimatedMaximumPrice(value);
-			data.setEstimatedMinimumPrice(value);
-			data.setEstimatedMedianPrice(value);
+			data.getEstimatedPrice().setMaximumPrice(value);
+			data.getEstimatedPrice().setMinimumPrice(value);
+			data.getEstimatedPrice().setMedianPrice(value);
 			data.setItemId(itemId);
 			data.setItemValueCertaintyPercentage(itemCertaintyPercentage);
 			data.setRecentTradeValues(new int[] {value});
