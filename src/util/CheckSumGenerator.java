@@ -5,7 +5,7 @@ import dto.Trade;
 public class CheckSumGenerator {
 
 	public static String generateCheckSum(Trade trade) {
-		return "";
+		return ""+trade.hashCode();
 	}
 	
 }

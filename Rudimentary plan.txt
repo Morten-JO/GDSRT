@@ -1,0 +1,43 @@
+Development plan:
+Finish retrieving Users graph 1 week
+Database local storage with postgres
+User "Web" Graphics 1 week
+	How?.. 
+	Godot application is a possibility...
+	Java gui sounds cringe, but i mean... maybe..
+Config file or something 0.5 week
+	Options in config, database location etc
+	Settings for tracking etc
+Indepth tracking 2 weeks
+	Im thinking to expand on the current tracking
+Api/Connection 2-3 weeks
+	Connection that allows another program to interact with this
+Add data values with a tag, so "USER":{"TAG":value:time etc} (would allow for rollbacks) 1-2 weeks
+	Can be tracked and added to users, so when choosing rollback, you can retrieve data from that specific point in time
+	Possibility to give db table or something to load in
+Add database and create automatic read 1-2 weeks ^tied with above
+	
+10-12 weeks
+
+
+
+
+Beta test plan:
+Fake first beta test
+
+Second beta test public with fake replies End November
+
+
+Third beta test public with fake replies End December
+
+
+
+14th of January, done with Code.
+
+
+Plan this week:
+Monday, Finish the plan
+Tuesday, UsersGraph & schoolwork prep
+Wednessday, Work + UsersGraph
+Thursday, UsersGraph + schoolwork
+Friday, Work + UsersGraph Finish

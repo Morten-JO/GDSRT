@@ -23,7 +23,6 @@ public class ItemDataController {
 	 */
 	public ItemData addItem(String itemId, int value, Percentage itemCertaintyPercentage) {
 		if(itemDataMap.containsKey(itemId)) {
-			System.out.println("Already here");
 			ItemData data = itemDataMap.get(itemId);
 			data.incrementTotalTrades();
 			if(data.getItemValueCertaintyPercentage().getPercentage() < itemCertaintyPercentage.getPercentage()) {
@@ -31,7 +30,6 @@ public class ItemDataController {
 			}
 			return data;
 		} else {
-			System.out.println("Not here");
 			ItemData data = new ItemData();
 			data.getEstimatedPrice().setMaximumPrice(value);
 			data.getEstimatedPrice().setMinimumPrice(value);

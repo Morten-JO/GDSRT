@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controllers.ItemDataController;
+import controllers.UserController;
 import data.ItemData;
 import data.PricePoint;
 import dto.Percentage;
@@ -15,7 +16,7 @@ import util.CheckSumGenerator;
 
 public class TradeAlgorithms {
 
-	public Trade processTrade(Trade trade, ItemDataController itemDataController) {
+	public Trade processTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
 		TradeResult result;
 		PricePoint valueOne = new PricePoint();
 		PricePoint valueTwo = new PricePoint();
@@ -107,17 +108,12 @@ public class TradeAlgorithms {
 			}
 		}
 		if(result.getTradeWarningLevel() > 5) {
-			//Third(IF), if first is found to be "sketch", then look into trade history of individuals, if none or little wrong, dont do anything
-			//else increase eyeLevel
-			//Should eyeLevel be above certain threshold, send warning maybe? Maybe it shouldn't be here
+			userController.requestUserCheck(trade.getTraderOne());
+			userController.requestUserCheck(trade.getTraderTwo());
+			
 		}
 		
 		trade.setTradeResult(result);
-		//if(check itemsNotRegistered and make a choice if the trade should be "nulled" or should count)
-		//First, assign values to each item in trade, if available, then compare/mark possibly inconclusive
-		//Second, add/updates values to the itemdata storage
-		
-		//Set result, then return that shit
 		//Problem: What if all items are not registered?
 		
 		return trade;
