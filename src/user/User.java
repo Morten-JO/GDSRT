@@ -1,9 +1,12 @@
 package user;
 
+import java.util.Map;
+
 public class User {
 
 	private String userIdentification;
 	private int currentAggroLevel;
+	private Map<String, String> additionalData;
 	
 	public User(String userIdentification, int currentAggroLevel) {
 		this.userIdentification = userIdentification;
@@ -21,7 +24,10 @@ public class User {
 	public void setCurrentAggroLevel(int currentAggroLevel) {
 		this.currentAggroLevel = currentAggroLevel;
 	}
-	
-	
-	
+	public Map<String, String> getAdditionalData() {
+		return additionalData;
+	}
+	public void setAdditionalData(Map<String, String> additionalData) {
+		this.additionalData = additionalData;
+	}
 }

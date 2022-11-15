@@ -1,10 +1,13 @@
 package main;
 
+import util.FileUtil;
+
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		if(FileUtil.loadConfigs()) {
+			System.out.println("Configs were loaded....");
+		}
 	}
 
 }
