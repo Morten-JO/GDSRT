@@ -6,4 +6,5 @@ public interface IUserDataRetriever {
 
 	public User getUser(String userId);
 	
+	public boolean updateUser(String userId)
 }
