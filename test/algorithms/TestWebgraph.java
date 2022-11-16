@@ -44,10 +44,10 @@ class TestWebgraph {
 	@BeforeEach
 	void setup() {
 		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new TestUserDataRetriever(), false);
-		User a = new User(TRADER_NAME_A, 0);
-		User b = new User(TRADER_NAME_B, 0);
-		User c = new User(TRADER_NAME_C, 0);
-		User d = new User(TRADER_NAME_D, 0);
+		User a = new User(TRADER_NAME_A, 0, null);
+		User b = new User(TRADER_NAME_B, 0, null);
+		User c = new User(TRADER_NAME_C, 0, null);
+		User d = new User(TRADER_NAME_D, 0, null);
 		((TestUserDataRetriever)controller.getUserDataRetriever()).users.add(a);
 		((TestUserDataRetriever)controller.getUserDataRetriever()).users.add(b);
 		((TestUserDataRetriever)controller.getUserDataRetriever()).users.add(c);

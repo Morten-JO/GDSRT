@@ -5,10 +5,11 @@ import dto.Percentage;
 public class ItemData {
 
 	private String itemId;
-	private PricePoint estimatedPrice = new PricePoint();
-	private int[] recentTradeValues;
+	private PricePoint estimatedPrice;
+	private Integer[] recentTradeValues;
 	private int totalTrades;
 	private Percentage itemValueCertaintyPercentage;
+	
 	public String getItemId() {
 		return itemId;
 	}
@@ -18,10 +19,10 @@ public class ItemData {
 	public PricePoint getEstimatedPrice() {
 		return estimatedPrice;
 	}
-	public int[] getRecentTradeValues() {
+	public Integer[] getRecentTradeValues() {
 		return recentTradeValues;
 	}
-	public void setRecentTradeValues(int[] recentTradeValues) {
+	public void setRecentTradeValues(Integer[] recentTradeValues) {
 		this.recentTradeValues = recentTradeValues;
 	}
 	public int getTotalTrades() {
@@ -39,5 +40,9 @@ public class ItemData {
 	public void incrementTotalTrades() {
 		totalTrades++;
 	}
+	public void setEstimatedPrice(PricePoint estimatedPrice) {
+		this.estimatedPrice = estimatedPrice;
+	}
+	
 	
 }

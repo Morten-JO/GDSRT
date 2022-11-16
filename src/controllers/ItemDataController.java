@@ -36,7 +36,7 @@ public class ItemDataController {
 			data.getEstimatedPrice().setMedianPrice(value);
 			data.setItemId(itemId);
 			data.setItemValueCertaintyPercentage(itemCertaintyPercentage);
-			data.setRecentTradeValues(new int[] {value});
+			data.setRecentTradeValues(new Integer[] {value});
 			data.setTotalTrades(1);
 			itemDataMap.put(itemId, data);
 			return data;

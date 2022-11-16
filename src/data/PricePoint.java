@@ -11,6 +11,13 @@ public class PricePoint {
 		incrementMedianPrice(quantity * point.getMedianPrice());
 		incrementMinimumPrice(quantity * point.getMinimumPrice());
 	}
+	
+	public PricePoint(float min, float med, float max) {
+		this.minimumPrice = min;
+		this.medianPrice = med;
+		this.maximumPrice = max;
+	}
+	
 	/**
 	 * Returns yes if another PricePoint at any(Minimum,Median or Maximum) is in any of the points. 
 	 * @param point

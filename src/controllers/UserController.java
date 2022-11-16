@@ -140,7 +140,11 @@ public class UserController extends TimerTask{
 	}
 	
 	private User getUser(String userId) {
-		return userDataRetriever.getUser(userId);
+		try {
+			return userDataRetriever.getUser(userId);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	private List<String> getListOfUsersFromTrades(List<Trade> trades, String originalTrader){

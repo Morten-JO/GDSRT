@@ -4,7 +4,6 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
@@ -44,9 +43,8 @@ public class DatabaseController {
 				while (databaseConnectionRunning) {
 					if (System.currentTimeMillis() - timeOnLastQuery > TIME_PER_KEEP_ALIVE_QUERY) {
 						try {
-							PreparedStatement statement = prepareSafeStatement("select * from " + databaseName + ".player where PLAYERNAME = ? AND PASSWORD = ?");
+							PreparedStatement statement = prepareSafeStatement("select * from " + databaseName + ".user where USER_ID = ?");
 							statement.setString(1, "");
-							statement.setString(2, "");
 							statement.executeQuery();
 						} catch (SQLException e) {
 							e.printStackTrace();
@@ -62,12 +60,11 @@ public class DatabaseController {
 			}
 		});
 		keepAliveThread.start();
+		
+		checkDatabaseDetails();
 	}
 	
-	
-	
-
-	public boolean checkDatabaseDetails() {
+	private boolean checkDatabaseDetails() {
 		// check player
 		try {
 			Statement statement = connect.createStatement();
@@ -129,88 +126,18 @@ public class DatabaseController {
 
 	private boolean createItemsTable() throws SQLException {
 		PreparedStatement statement = prepareSafeStatement(
-				"create table items(ITEM_ID VARCHAR(30), MINIMUM int not null default 1, MEDIAN int not null default 1, MAXIMUM int not null default 1, PRIMARY KEY(ITEM_ID))");
+				"create table items(ITEM_ID VARCHAR(30), MINIMUM FLOAT not null default 0, MEDIAN FLOAT not null default 0, MAXIMUM FLOAT not null default 0, RECENT_TRADE_VALUES INT ARRAY[50], INT TOTAL_TRADES not null default 0, INT CERTAINTY_PERCENTAGE not null default 0, PRIMARY KEY(ITEM_ID))");
 		return statement.execute();
 	}
 
-	public boolean userExists(String userId) {
-		PreparedStatement statementCheckPlayerOne;
-		try {
-			statementCheckPlayerOne = prepareSafeStatement(
-					"select * from " + databaseName + ".users where USER_ID = ?");
-			statementCheckPlayerOne.setString(1, userId);
-			ResultSet setCheckPlayerOne = statementCheckPlayerOne.executeQuery();
-			if (setCheckPlayerOne.next()) {
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
+	public Connection getConnection() {
+		return connect;
 	}
 	
-
-	public boolean addUser(String userId, String additionalData) {
-		try {
-			if(userExists(userId)) {
-				return false;
-			}
-			PreparedStatement statement = prepareSafeStatement("insert into " + databaseName + ".users (USER_ID, EYE_LEVEL, ADD_DATA) values(?,?,?)");
-			statement.setString(1, userId);
-			statement.setInt(2, 1);
-			statement.setString(3, additionalData);
-			connect.setAutoCommit(false);
-			statement.executeUpdate();
-			connect.commit();
-			connect.setAutoCommit(true);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-
+	public String getDatabaseName() {
+		return databaseName;
 	}
 	
-	public boolean updateUserEyeLevel(String userId, int eyeLevel) throws SQLException {
-		if(userExists(userId)) {
-			PreparedStatement statementUpdate = prepareSafeStatement("update " + databaseName + ".users set EYE_LEVEL = ? where USER_ID = ?");
-			statementUpdate.setInt(1, eyeLevel);
-			statementUpdate.setString(2, userId);
-			int res = statementUpdate.executeUpdate();
-			if(res != 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean updateUserAdditionalData(String userId, String additionalData) throws SQLException {
-		if(userExists(userId)) {
-			PreparedStatement statementUpdate = prepareSafeStatement("update " + databaseName + ".users set ADD_DATA = ? where USER_ID = ?");
-			statementUpdate.setString(1, additionalData);
-			statementUpdate.setString(2, userId);
-			int res = statementUpdate.executeUpdate();
-			if(res != 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
-	public boolean deleteFriendRequest(String playerOne, String playerTwo) {
-		try {
-			PreparedStatement deleteFriendRequest = prepareSafeStatement(
-					"delete from " + databaseName + ".userrelationship where PLAYERNAMERELATING = ? AND PLAYERNAMERELATED = ? AND RELATIONTYPE = 'friend_request'");
-			deleteFriendRequest.setString(1, playerOne);
-			deleteFriendRequest.setString(2, playerTwo);
-			deleteFriendRequest.execute();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
 	
 	public PreparedStatement prepareSafeStatement(String val) throws SQLException {
 		timeOnLastQuery = System.currentTimeMillis();

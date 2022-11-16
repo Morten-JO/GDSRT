@@ -18,8 +18,8 @@ public class TradeAlgorithms {
 
 	public Trade processTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
 		TradeResult result;
-		PricePoint valueOne = new PricePoint();
-		PricePoint valueTwo = new PricePoint();
+		PricePoint valueOne = new PricePoint(0,0,0);
+		PricePoint valueTwo = new PricePoint(0,0,0);
 		int itemsNotRegistered = 0;
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
 		for(TradeItem item : trade.getItemsOne()) {
