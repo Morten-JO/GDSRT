@@ -33,7 +33,7 @@ class TestWebgraph {
 		Trade trade = new Trade();
 		trade.setTraderOne(traderOne);
 		trade.setTraderTwo(traderTwo);
-		trade.setTradeId(0);
+		trade.setTradeId("0");
 		TradeResult tradeResult = new TradeResult();
 		trade.setTradeResult(tradeResult);
 		trade.setItemsOne(new ArrayList<TradeItem>());

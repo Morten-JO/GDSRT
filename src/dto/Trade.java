@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Trade {
 
-	private int tradeId;
+	private String tradeId;
 	private String traderOne;
 	private String traderTwo;
 	private List<TradeItem> itemsOne; //Maybe it should be Object Item(ItemName/ItemId and quantity)
@@ -13,11 +13,11 @@ public class Trade {
 	
 	private TradeResult tradeResult;
 
-	public int getTradeId() {
+	public String getTradeId() {
 		return tradeId;
 	}
 
-	public void setTradeId(int tradeId) {
+	public void setTradeId(String tradeId) {
 		this.tradeId = tradeId;
 	}
 

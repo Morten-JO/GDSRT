@@ -120,7 +120,7 @@ public class DatabaseController {
 
 	private boolean createTradesTable() throws SQLException {
 		PreparedStatement statement = prepareSafeStatement(
-				"create table trades(TRADE_ID VARCHAR(30), TRADER_ONE_ID VARCHAR(30), TRADER_TWO_ID VARCHAR(30), ITEMS_ONE VARCHAR, ITEMS_TWO VARCHAR, TRADE_CALCULATED BOOLEAN, TRADE_MED_DIFF int not null default 0, TRADE_MIN_DIFF int not null default 0, TRADE_MAX_DIFF int not null default 0, TRADE_WARNING_LEVEL int not null default 0, TIME_STAMP VARCHAR, CHECK_SUM VARCHAR, ADD_DATA VARCHAR, PRIMARY KEY (TRADE_ID), FOREIGN KEY(TRADER_ONE_ID) REFERENCES users(USER_ID), FOREIGN KEY(TRADER_TWO_ID) REFERENCES users(USER_ID))");
+				"create table trades(TRADE_ID VARCHAR(30), TRADER_ONE_ID VARCHAR(30), TRADER_TWO_ID VARCHAR(30), ITEMS_ONE VARCHAR, ITEMS_TWO VARCHAR, TRADE_CALCULATED VARCHAR, TRADE_MIN_DIFF int not null default 0, TRADE_MED_DIFF int not null default 0, TRADE_MAX_DIFF int not null default 0, TRADE_WARNING_LEVEL int not null default 0, TIME_STAMP VARCHAR, CHECK_SUM VARCHAR, ADD_DATA VARCHAR, PRIMARY KEY (TRADE_ID), FOREIGN KEY(TRADER_ONE_ID) REFERENCES users(USER_ID), FOREIGN KEY(TRADER_TWO_ID) REFERENCES users(USER_ID))");
 		return statement.execute();
 	}
 
