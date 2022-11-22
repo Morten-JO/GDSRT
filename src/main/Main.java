@@ -8,6 +8,7 @@ public class Main {
 		if(FileUtil.loadConfigs()) {
 			System.out.println("Configs were loaded....");
 		}
+		
 	}
 
 }

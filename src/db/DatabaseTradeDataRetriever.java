@@ -77,13 +77,48 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 	@Override
 	public boolean addTrade(String tradeId, String traderOne, String traderTwo, List<TradeItem> itemsOne,
 			List<TradeItem> itemsTwo, TradeResult tradeResult) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		if(tradeExists(tradeId)) {
+			return false;
+		}
+		
+		PreparedStatement statement = dbController.prepareSafeStatement("insert into " + dbController.getDatabaseName() + "."+tableName+" (TRADE_ID, TRADER_ONE_ID, TRADER_TWO_ID, ITEMS_ONE, ITEMS_TWO, TRADE_CALCULATED, TRADE_MIN_DIFF, TRADE_MED_DIFF, TRADE_MAX_DIFF, TRADE_WARNING_LEVEL, TIME_STAMP, CHECK_SUM, ADD_DATA) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		statement.setString(1, tradeId);
+		statement.setString(2, traderOne);
+		statement.setString(3, traderTwo);
+		statement.setString(4, DataTypeHelper.tradeItemListToString(itemsOne, dbController.getConnection()));
+		statement.setString(5, DataTypeHelper.tradeItemListToString(itemsTwo, dbController.getConnection()));
+		statement.setBoolean(6, tradeResult.getTradeCalculated() == TradeCalculated.COMPLETED);
+		statement.setInt(7, tradeResult.getTradeMinimumValueDifference());
+		statement.setInt(8, tradeResult.getTradeMedianValueDifference());
+		statement.setInt(9, tradeResult.getTradeMaximumValueDifference());
+		statement.setInt(10, tradeResult.getTradeWarningLevel());
+		statement.setString(11, tradeResult.getTimeStampCalculated());
+		statement.setString(12, tradeResult.getChecksum());
+		statement.setString(13, "");
+		dbController.getConnection().setAutoCommit(false);
+		statement.executeUpdate();
+		dbController.getConnection().commit();
+		dbController.getConnection().setAutoCommit(true);
+		return true;
 	}
 
 	@Override
-	public boolean updateTradeResult(String tradeId, TradeResult tradeResult) {
-		// TODO Auto-generated method stub
+	public boolean updateTradeResult(String tradeId, TradeResult tradeResult) throws Exception{
+		if(tradeExists(tradeId)) {
+			PreparedStatement statementUpdate = dbController.prepareSafeStatement("update " + dbController.getDatabaseName() + "."+tableName+" set TRADE_CALCULATED = ?, TRADE_MIN_DIFF = ?, TRADE_MED_DIFF = ?, TRADE_MAX_DIFF = ?, TRADE_WARNING_LEVEL = ?, TIME_STAMP = ?, CHECK_SUM = ?, ADD_DATA = ? where TRADE_ID = ?");
+			statementUpdate.setBoolean(1, tradeResult.getTradeCalculated() == TradeCalculated.COMPLETED);
+			statementUpdate.setInt(2, tradeResult.getTradeMinimumValueDifference());
+			statementUpdate.setInt(3, tradeResult.getTradeMedianValueDifference());
+			statementUpdate.setInt(4, tradeResult.getTradeMaximumValueDifference());
+			statementUpdate.setInt(5, tradeResult.getTradeWarningLevel());
+			statementUpdate.setString(6, tradeResult.getTimeStampCalculated());
+			statementUpdate.setString(7, tradeResult.getChecksum());
+			statementUpdate.setString(8, "");
+			int res = statementUpdate.executeUpdate();
+			if(res != 0) {
+				return true;
+			}
+		}
 		return false;
 	}
 
