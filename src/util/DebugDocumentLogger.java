@@ -23,6 +23,9 @@ public class DebugDocumentLogger {
 
 	public DebugDocumentLogger(File file) throws IOException {
 		this.file = file;
+		if(!file.exists()) {
+			file.createNewFile();
+		}
 		writer = new FileWriter(file, true);
 		bufferedWriter = new BufferedWriter(writer);
 		out = new PrintWriter(bufferedWriter);

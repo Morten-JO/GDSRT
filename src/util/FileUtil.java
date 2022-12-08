@@ -17,8 +17,10 @@ public class FileUtil {
             LoadedConfigs.DB_HOST = prop.getProperty("DB_HOST");
             LoadedConfigs.DB_USER = prop.getProperty("DB_USERNAME");
             LoadedConfigs.DB_PASS = prop.getProperty("DB_PASSWORD");
-            LoadedConfigs.DB_TYPE = LoadedConfigs.DatabaseType.valueOf(prop.getProperty("DB_TYPE"));
+            LoadedConfigs.DB_NAME = prop.getProperty("DB_NAME");
+            LoadedConfigs.DB_TYPE = LoadedConfigs.DatabaseType.valueOf(prop.getProperty("DB_TYPE").toUpperCase());
             LoadedConfigs.STRICTNESS_LEVEL = Integer.valueOf(prop.getProperty("STRICTNESS_LEVEL"));
+            LoadedConfigs.CONNECTION_TYPE = LoadedConfigs.ConnectionType.valueOf(prop.getProperty("CONNECTION_TYPE").toUpperCase());
             propsInput.close();
             return true;
         } catch (Exception e) {

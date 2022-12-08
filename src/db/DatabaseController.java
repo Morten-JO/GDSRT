@@ -25,10 +25,10 @@ public class DatabaseController {
 	private Thread keepAliveThread;
 	private boolean databaseConnectionRunning = false;
 
-	public DatabaseController(String databaseHost, DebugDocumentLogger documentLogger, String type, String databaseName, String username, String password, int port) throws ClassNotFoundException, SQLException {
+	public DatabaseController(String databaseHost, String type, String databaseName, String username, String password, int port, DebugDocumentLogger documentLogger) throws ClassNotFoundException, SQLException {
 		this.databaseName = databaseName;
 		this.documentLogger = documentLogger;
-		String url = "jdbc:"+type+"://"+databaseHost+":"+port+"/"+databaseName;
+		String url = "jdbc:"+type.toLowerCase()+"://"+databaseHost+":"+port+"/"+databaseName;
 		Connection conn = DriverManager.getConnection(url, username, password);
 		this.databaseUrl = url;
 		this.databaseUsername = username;
