@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
@@ -26,6 +27,14 @@ public class EncryptionHelper {
 		byte[] msgToBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] encryptedBytes = encryptCipher.doFinal(msgToBytes);
 		return Base64.getEncoder().encodeToString(encryptedBytes);
+	}
+	
+	public static String decryptMsgWithPrivateKey(String msg, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+		Cipher decryptCipher = Cipher.getInstance("RSA");
+		decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
+		byte[] msgToBytes = msg.getBytes(StandardCharsets.UTF_8);
+		byte[] decryptedBytes = decryptCipher.doFinal(msgToBytes);
+		return Base64.getEncoder().encodeToString(decryptedBytes);
 	}
 	
 	public static PublicKey getKeyFileToPublicKey(File keyFile) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {

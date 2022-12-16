@@ -6,12 +6,22 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import config.LoadedConfigs;
 import controllers.ItemDataController;
 import controllers.TradeController;
 import controllers.UserController;
+import dto.Trade;
+import util.DataTypeHelper;
 import util.DebugDocumentLogger;
+import util.EncryptionHelper;
 import util.PrintDebugDocumentLogger;
 
 
@@ -29,6 +39,8 @@ public class Server {
 	private TradeController tc;
 	private UserController uc;
 	private ItemDataController idc;
+	
+	private PrivateKey decryptionKey;
 
 	public Server(TradeController tc, UserController uc, ItemDataController idc) throws IOException {
 		incomingServerPort = LoadedConfigs.INCOMING_SERVER_PORT;
@@ -84,5 +96,25 @@ public class Server {
 		}
 	}
 	
-	//TODO add logic here for processing received trades
+	public void newTradeMessage(String msg) {
+		logger.writeLineToFile("New trade message received.");
+		String msgToProcess = msg;
+		if(LoadedConfigs.ENCRYPTION) {
+			try {
+				msgToProcess = EncryptionHelper.decryptMsgWithPrivateKey(msg, decryptionKey);
+			} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+					| BadPaddingException e) {
+				e.printStackTrace();
+				logger.writeLineToFile("Failed to decrypt message. Message was "+msg);
+			}
+		}
+		Trade trade = DataTypeHelper.tradeStringToTrade(msgToProcess);
+		boolean res = tc.addTrade(trade, idc, uc);
+		logger.writeLineToFile("Added trade from tcp to tradeController, response was "+res);
+	}
+	
+	public void setDecryptionKey(PrivateKey privateKey) {
+		this.decryptionKey = privateKey;
+	}
+	
 }

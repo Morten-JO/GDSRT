@@ -4,8 +4,12 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import dto.Trade;
 import dto.TradeItem;
 
 public class DataTypeHelper {
@@ -59,6 +63,36 @@ public class DataTypeHelper {
 			}
 		}
 		return vals;
+	}
+	
+	public static Trade tradeStringToTrade(String trade) {
+		Map<String, String> map = Arrays.stream(trade.split(","))
+				.map(entry -> entry.split("="))
+			    .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
+		Trade convertedTrade = new Trade();
+		convertedTrade.setTraderOne(map.get("TraderOne"));
+		convertedTrade.setTraderTwo(map.get("TraderTwo"));
+		convertedTrade.setItemsOne(mapToTradeItems(map, "traderOne"));
+		convertedTrade.setItemsTwo(mapToTradeItems(map, "traderTwo"));
+		return convertedTrade;
+	}
+	
+	private static List<TradeItem> mapToTradeItems(Map<String, String> map, String prefix){
+		List<TradeItem> items = new ArrayList<>();
+		int iterator = 1;
+		while(true) {
+			if(map.containsKey(prefix+iterator)) {
+				String[] tradeItemData = map.get(prefix+iterator).split(":");
+				TradeItem item = new TradeItem();
+				item.setItemId(tradeItemData[0]);
+				item.setQuantity(Integer.valueOf(tradeItemData[1]));
+				items.add(item);
+				iterator++;
+			} else {
+				break;
+			}
+		}
+		return items;
 	}
 	
 	

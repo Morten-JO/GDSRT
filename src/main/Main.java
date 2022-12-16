@@ -10,9 +10,16 @@ import connection.Server;
 import controllers.ItemDataController;
 import controllers.TradeController;
 import controllers.UserController;
+import data_retrievers.IItemDataRetriever;
+import data_retrievers.ITradeDataRetriever;
+import data_retrievers.IUserDataRetriever;
 import db.DatabaseController;
+import db.DatabaseItemDataRetriever;
 import db.DatabaseTradeDataRetriever;
 import db.DatabaseUserDataRetriever;
+import temp_db.TempDatabaseItemDataRetriever;
+import temp_db.TempDatabaseTradeDataRetriever;
+import temp_db.TempDatabaseUserDataRetriever;
 import util.DebugDocumentLogger;
 import util.FileUtil;
 import util.PrintDebugDocumentLogger;
@@ -32,24 +39,33 @@ public class Main {
 		}
 		
 		DatabaseController dbc = null;
+		ITradeDataRetriever tdr = null;
+		IUserDataRetriever udr = null;
+		IItemDataRetriever idr = null;
 		if(LoadedConfigs.DB_TYPE == LoadedConfigs.DatabaseType.POSTGRESQL) {
 			try {
 				dbc = new DatabaseController(LoadedConfigs.DB_HOST, LoadedConfigs.DB_TYPE.toString(), LoadedConfigs.DB_NAME, LoadedConfigs.DB_USER, LoadedConfigs.DB_PASS, LoadedConfigs.DB_PORT, logger);
+				tdr = new DatabaseTradeDataRetriever(dbc);
+				udr = new DatabaseUserDataRetriever(dbc);
+				idr = new DatabaseItemDataRetriever(dbc);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}
 			
 		} else {
-			//TODO add temporary "storage" database
+			System.err.println("Known DB type not specified, using transient database(DATA WILL BE DELETED ON SHUTDOWN).");
+			tdr = new TempDatabaseTradeDataRetriever();
+			udr = new TempDatabaseUserDataRetriever();
+			idr = new TempDatabaseItemDataRetriever();
 		}
 		if(dbc == null) {
 			System.err.println("Failed to etablish database connection, shutting off.");
 			System.exit(0);
 			return;
 		}
-		TradeController tc = new TradeController(new DatabaseTradeDataRetriever(dbc));
-		UserController uc = new UserController(tc, new DatabaseUserDataRetriever(dbc), true);
-		ItemDataController ic = new ItemDataController();
+		TradeController tc = new TradeController(tdr);
+		UserController uc = new UserController(tc, udr, tdr, idr);
+		ItemDataController ic = new ItemDataController(idr);
 		
 		if(LoadedConfigs.CONNECTION_TYPE == ConnectionType.SOCKET) {
 			Server server;

@@ -12,12 +12,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import dto.TradeItem;
 import util.EncryptionHelper;
 
 public class GDSRTConnector {
@@ -63,12 +67,25 @@ public class GDSRTConnector {
 
 	}
 	
+	public boolean addTrade(String traderOne, String traderTwo, List<TradeItem> traderOneItems, List<TradeItem> traderTwoItems) {
+		HashMap<String, String> map = new HashMap<>();
+		map.put("traderOne", traderOne);
+		map.put("traderTwo", traderTwo);
+		int itemIterator = 1;
+		for(TradeItem item : traderOneItems) {
+			map.put("traderOne"+itemIterator, item.getItemId()+":"+item.getQuantity());
+		}
+		itemIterator = 1;
+		for(TradeItem item : traderTwoItems) {
+			map.put("traderTwo"+itemIterator, item.getItemId()+":"+item.getQuantity());
+		}
+		return addTrade(map);
+	}
+	
 	public boolean addTrade(Map<String, String> map) {
-		StringBuilder mapAsString = new StringBuilder("{");
-	    for (String key : map.keySet()) {
-	        mapAsString.append(key + "=" + map.get(key) + ", ");
-	    }
-	    mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
+		String mapAsString = map.keySet().stream()
+			      .map(key -> key + "=" + map.get(key))
+			      .collect(Collectors.joining(", ", "{", "}"));
 	    return addMessageForTransportation(mapAsString.toString());
 	}
 	

@@ -21,6 +21,7 @@ public class FileUtil {
             LoadedConfigs.DB_TYPE = LoadedConfigs.DatabaseType.valueOf(prop.getProperty("DB_TYPE").toUpperCase());
             LoadedConfigs.STRICTNESS_LEVEL = Integer.valueOf(prop.getProperty("STRICTNESS_LEVEL"));
             LoadedConfigs.CONNECTION_TYPE = LoadedConfigs.ConnectionType.valueOf(prop.getProperty("CONNECTION_TYPE").toUpperCase());
+            LoadedConfigs.ENCRYPTION = Boolean.valueOf(prop.getProperty("ENCRYPTION"));
             propsInput.close();
             return true;
         } catch (Exception e) {

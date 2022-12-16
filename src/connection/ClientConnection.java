@@ -16,7 +16,6 @@ public class ClientConnection extends Connection {
 	private Long count;
 	protected Server hostServer;
 	protected Client connectionOwner;
-	public String indentificationNumberRequest = "";
 
 	public ClientConnection(Client connectionOwner, Server hostServer, Socket socket,
 			BufferedReader reader, PrintWriter writer) {
@@ -66,7 +65,9 @@ public class ClientConnection extends Connection {
 		}
 		if (input.startsWith("LR")) {
 			String[] values = input.split(" ");
-			
+			if(values.length  >= 2) {
+				hostServer.newTradeMessage(values[1]);
+			}
 			return;
 		}
 	}
@@ -79,5 +80,7 @@ public class ClientConnection extends Connection {
 	public void setConnectionOwner(Client client) {
 		connectionOwner = client;
 	}
+	
+	
 
 }

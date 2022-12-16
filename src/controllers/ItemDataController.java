@@ -1,32 +1,31 @@
 package controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import data.ItemData;
+import data_retrievers.IItemDataRetriever;
 import dto.Percentage;
 
 public class ItemDataController {
 
-	private Map<String, ItemData> itemDataMap;
-	private boolean loadedItemDataMap = false;
+	//TODO Maybe make it so an transistent version of the items are present.
+	private IItemDataRetriever idr;
 	
-	public ItemDataController() {
-		itemDataMap = new HashMap<>();
+	public ItemDataController(IItemDataRetriever idr) {
+		this.idr = idr;
 	}
 	
 	/**
-	 * Can only be called when loadedItemDataMap is here ig?
+	 * Can only be called when loadedItemDataMap is here
 	 * @param itemId
 	 * @param value
 	 * @return
+	 * @throws Exception 
 	 */
-	public ItemData addItem(String itemId, int value, Percentage itemCertaintyPercentage) {
-		if(itemDataMap.containsKey(itemId)) {
-			ItemData data = itemDataMap.get(itemId);
-			data.incrementTotalTrades();
+	public ItemData addItem(String itemId, int value, Percentage itemCertaintyPercentage) throws Exception {
+		if(idr.itemExists(itemId)) {
+			ItemData data = idr.getItem(itemId);
+			idr.updateTotalTrades(itemId, data.getTotalTrades()+1);
 			if(data.getItemValueCertaintyPercentage().getPercentage() < itemCertaintyPercentage.getPercentage()) {
-				data.getItemValueCertaintyPercentage().setPercentage(itemCertaintyPercentage.getPercentage());
+				idr.updateCertaintyPercentage(itemId, itemCertaintyPercentage.getPercentage());
 			}
 			return data;
 		} else {
@@ -38,13 +37,20 @@ public class ItemDataController {
 			data.setItemValueCertaintyPercentage(itemCertaintyPercentage);
 			data.setRecentTradeValues(new Integer[] {value});
 			data.setTotalTrades(1);
-			itemDataMap.put(itemId, data);
-			return data;
+			if(idr.addItem(itemId, data.getEstimatedPrice(), data.getRecentTradeValues(), data.getTotalTrades(), data.getItemValueCertaintyPercentage().getPercentage())) {
+				return data;
+			} else {
+				return null;
+			}
 		}
 	}
 	
-	public ItemData retrieveItemData(String itemId) {
-		return itemDataMap.get(itemId);
+	public ItemData getItem(String itemId) {
+		try {
+			return idr.getItem(itemId);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
 }

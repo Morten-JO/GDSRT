@@ -8,8 +8,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import data.UserTradeGraph;
+import data_retrievers.IItemDataRetriever;
+import data_retrievers.ITradeDataRetriever;
 import data_retrievers.IUserDataRetriever;
 import dto.Trade;
+import dto.TradeResult;
 import user.User;
 
 public class UserController extends TimerTask{
@@ -19,14 +22,34 @@ public class UserController extends TimerTask{
 	private static Long DURATION_PER_CHECK = 60000L;
 	private TradeController tradeController;
 	private IUserDataRetriever userDataRetriever;
+	private ITradeDataRetriever tradeDataRetriever;
+	private IItemDataRetriever itemDataRetriever;
 	
-	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, boolean userChecksEnabled) {
+	/**
+	 * No userChecksEnabled
+	 * @param tc
+	 * @param userDataRetriever
+	 * @param userChecksEnabled
+	 */
+	public UserController(TradeController tc, IUserDataRetriever userDataRetriever) {
 		this.tradeController = tc;
 		this.userDataRetriever = userDataRetriever;
-		if(userChecksEnabled) {
-			Timer t = new Timer();
-			t.scheduleAtFixedRate(this, DURATION_PER_CHECK, DURATION_PER_CHECK);
-		}
+	}
+	
+	/**
+	 * UserChecksEnabled is true
+	 * @param tc
+	 * @param userDataRetriever
+	 * @param userChecksEnabled
+	 */
+	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, ITradeDataRetriever tradeDataRetriever, IItemDataRetriever itemDataRetriever) {
+		this.tradeController = tc;
+		this.userDataRetriever = userDataRetriever;
+		this.tradeDataRetriever = tradeDataRetriever;
+		this.itemDataRetriever = itemDataRetriever;
+		Timer t = new Timer();
+		t.scheduleAtFixedRate(this, DURATION_PER_CHECK*5L, DURATION_PER_CHECK);
+		
 	}
 	
 	
@@ -51,13 +74,19 @@ public class UserController extends TimerTask{
 	
 	private void runRequestedChecks() {
 		for(Map.Entry<String, Long> entry : usersRequestedForCheck.entrySet()) {
-			if(entry.getValue() + MIN_DURATION_FOR_CHECK > System.currentTimeMillis()) {
+			if(entry.getValue() + MIN_DURATION_FOR_CHECK < System.currentTimeMillis()) {
 				continue;
 			}
-			if(runRequestedCheckOnUser(entry.getKey())) {
-				usersRequestedForCheck.remove(entry.getKey());
-			} else {
-				usersRequestedForCheck.put(entry.getKey(), entry.getValue() + MIN_DURATION_FOR_CHECK);
+			try {
+				if(runRequestedCheckOnUser(entry.getKey())) {
+					usersRequestedForCheck.remove(entry.getKey());
+				} else {
+					usersRequestedForCheck.put(entry.getKey(), entry.getValue() + MIN_DURATION_FOR_CHECK);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Failed to perform check... Adding time and doing it again");
+				entry.setValue(System.currentTimeMillis());
 			}
 		}
 	}
@@ -66,8 +95,17 @@ public class UserController extends TimerTask{
 	 * Logic for running the requestedCheck
 	 * @param userId
 	 * @return false if check is not successfull, true if it was
+	 * @throws Exception 
 	 */
-	private boolean runRequestedCheckOnUser(String userId) {
+	private boolean runRequestedCheckOnUser(String userId) throws Exception {
+		User user = userDataRetriever.getUser(userId);
+		List<Trade> tradesOfUser = tradeDataRetriever.getTradesOfUser(userId);
+		for(Trade trade: tradesOfUser) {
+			if(trade.getTradeResult().getTradeWarningLevel() == 0 && trade.getTradeResult().getTradeCalculated() == TradeResult.TradeCalculated.FINALIZED) {
+				continue;
+			}
+			here to do solmething with the trade
+		}
 		//Third(IF), if first is found to be "sketch", then look into trade history of individuals, if none or little wrong, dont do anything
 		//else increase eyeLevel
 		//Should eyeLevel be above certain threshold, send warning maybe? Maybe it shouldn't be here

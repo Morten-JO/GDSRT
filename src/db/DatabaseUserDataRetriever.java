@@ -20,7 +20,7 @@ public class DatabaseUserDataRetriever implements IUserDataRetriever{
 	
 	@Override
 	public User getUser(String userId) throws SQLException {
-		PreparedStatement statement = dbController.prepareSafeStatement("select * from " + dbController.getDatabaseName() + "."+tableName+" where ITEM_ID = ?");
+		PreparedStatement statement = dbController.prepareSafeStatement("select * from " + dbController.getDatabaseName() + "."+tableName+" where USER_ID = ?");
 		statement.setString(1, userId);
 		ResultSet userData = statement.executeQuery();
 		if(userData.next()) {

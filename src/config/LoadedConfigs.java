@@ -19,5 +19,6 @@ public class LoadedConfigs {
 	public static Integer STRICTNESS_LEVEL = 1;
 	public static ConnectionType CONNECTION_TYPE  = ConnectionType.SOCKET;
 	public static int INCOMING_SERVER_PORT = 1234;
+	public static boolean ENCRYPTION = false;
 	
 }

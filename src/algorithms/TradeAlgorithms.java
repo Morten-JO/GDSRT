@@ -23,7 +23,7 @@ public class TradeAlgorithms {
 		int itemsNotRegistered = 0;
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
 		for(TradeItem item : trade.getItemsOne()) {
-			ItemData value = itemDataController.retrieveItemData(item.getItemId());
+			ItemData value = itemDataController.getItem(item.getItemId());
 			if(value != null) {
 				valueOne.incrementAll(item.getQuantity(), value.getEstimatedPrice());
 			} else {
@@ -33,7 +33,7 @@ public class TradeAlgorithms {
 		}
 		List<TradeItem> tradeTwoNotRegistered = new ArrayList<>();
 		for(TradeItem item : trade.getItemsTwo()) {
-			ItemData value = itemDataController.retrieveItemData(item.getItemId());
+			ItemData value = itemDataController.getItem(item.getItemId());
 			if(value != null) {
 				valueTwo.incrementAll(item.getQuantity(), value.getEstimatedPrice());
 			} else {
@@ -70,11 +70,19 @@ public class TradeAlgorithms {
 			}
 			for(TradeItem item : tradeOneNotRegistered) {
 				int itemValue = averagePricePerItem / item.getQuantity();
-				itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+				try {
+					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			for(TradeItem item : tradeTwoNotRegistered) {
 				int itemValue = averagePricePerItem / item.getQuantity();
-				itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+				try {
+					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, CheckSumGenerator.generateCheckSum(trade));
 		} else {
@@ -84,7 +92,7 @@ public class TradeAlgorithms {
 			} else {
 				List<Integer> values = new ArrayList<>();
 				for(TradeItem item : trade.getBothTradeItems()) {
-					ItemData value = itemDataController.retrieveItemData(item.getItemId());
+					ItemData value = itemDataController.getItem(item.getItemId());
 					if(value == null) {
 						values.add(0);
 					} else {
@@ -114,7 +122,6 @@ public class TradeAlgorithms {
 		}
 		
 		trade.setTradeResult(result);
-		//Problem: What if all items are not registered?
 		
 		return trade;
 	}

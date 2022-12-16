@@ -5,7 +5,7 @@ import util.DateStamper;
 public class TradeResult {
 
 	public enum TradeCalculated {
-		COMPLETED, ERROR, NOT_COMPLETED, INCONCLUSIVE
+		COMPLETED, ERROR, NOT_COMPLETED, INCONCLUSIVE, FINALIZED
 	}
 	
 	private TradeCalculated tradeCalculated = TradeCalculated.NOT_COMPLETED;
