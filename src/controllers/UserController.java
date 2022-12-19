@@ -1,5 +1,7 @@
 package controllers;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,13 +9,16 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import algorithms.TradeAlgorithms;
 import data.UserTradeGraph;
 import data_retrievers.IItemDataRetriever;
 import data_retrievers.ITradeDataRetriever;
 import data_retrievers.IUserDataRetriever;
 import dto.Trade;
 import dto.TradeResult;
+import rules.TradeRules;
 import user.User;
+import util.DateStamper;
 
 public class UserController extends TimerTask{
 
@@ -21,6 +26,7 @@ public class UserController extends TimerTask{
 	private static Long MIN_DURATION_FOR_CHECK = 5000L;
 	private static Long DURATION_PER_CHECK = 60000L;
 	private TradeController tradeController;
+	private ItemDataController itemDataController;
 	private IUserDataRetriever userDataRetriever;
 	private ITradeDataRetriever tradeDataRetriever;
 	private IItemDataRetriever itemDataRetriever;
@@ -31,8 +37,9 @@ public class UserController extends TimerTask{
 	 * @param userDataRetriever
 	 * @param userChecksEnabled
 	 */
-	public UserController(TradeController tc, IUserDataRetriever userDataRetriever) {
+	public UserController(TradeController tc, ItemDataController idc, IUserDataRetriever userDataRetriever) {
 		this.tradeController = tc;
+		this.itemDataController = idc;
 		this.userDataRetriever = userDataRetriever;
 	}
 	
@@ -100,15 +107,35 @@ public class UserController extends TimerTask{
 	private boolean runRequestedCheckOnUser(String userId) throws Exception {
 		User user = userDataRetriever.getUser(userId);
 		List<Trade> tradesOfUser = tradeDataRetriever.getTradesOfUser(userId);
+		List<Trade> newTradesProcessed = new ArrayList<>();
+		int oldWarningLevel = 0;
+		int newWarningLevel = 0;
 		for(Trade trade: tradesOfUser) {
 			if(trade.getTradeResult().getTradeWarningLevel() == 0 && trade.getTradeResult().getTradeCalculated() == TradeResult.TradeCalculated.FINALIZED) {
 				continue;
 			}
-			here to do solmething with the trade
+			LocalTime tradeDate = DateStamper.returnStampedDate(trade.getTradeResult().getTimeStampCalculated());
+			LocalTime currentTime = LocalTime.now();
+			if(tradeDate.until(currentTime, ChronoUnit.DAYS) >= TradeRules.DAYS_FOR_TRADE_TO_EXPIRE) {
+				continue;
+			}
+			Trade copiedTrade = new Trade(trade);
+			Trade processedTrade = TradeAlgorithms.processTrade(copiedTrade, itemDataController, this);
+			if(processedTrade.getTradeResult().getTradeWarningLevel() == trade.getTradeResult().getTradeWarningLevel() && processedTrade.getTradeResult().getTradeCalculated() == trade.getTradeResult().getTradeCalculated()) {
+				continue;
+			}
+			newTradesProcessed.add(processedTrade);
+			oldWarningLevel += trade.getTradeResult().getTradeWarningLevel();
+			newWarningLevel += processedTrade.getTradeResult().getTradeWarningLevel();
 		}
-		//Third(IF), if first is found to be "sketch", then look into trade history of individuals, if none or little wrong, dont do anything
-		//else increase eyeLevel
-		//Should eyeLevel be above certain threshold, send warning maybe? Maybe it shouldn't be here
+		if(Math.abs(newWarningLevel - oldWarningLevel) > oldWarningLevel / 10f) {
+			user.setCurrentAggroLevel(user.getCurrentAggroLevel() + 1);
+			for(Trade trade : newTradesProcessed) {
+				tradeDataRetriever.updateTradeResult(trade.getTradeId(), trade.getTradeResult());
+			}
+			userDataRetriever.updateUserEyeLevel(userId, user.getCurrentAggroLevel());
+			return true;
+		}
 		return false;
 	}
 	

@@ -13,6 +13,17 @@ public class Trade {
 	
 	private TradeResult tradeResult;
 
+	public Trade() {
+		
+	}
+	public Trade(Trade toCopy) {
+		this.tradeId = toCopy.tradeId;
+		this.traderOne = toCopy.traderOne;
+		this.traderTwo = toCopy.traderTwo;
+		this.itemsOne = toCopy.itemsOne;
+		this.itemsTwo = toCopy.itemsTwo;
+	}
+	
 	public String getTradeId() {
 		return tradeId;
 	}

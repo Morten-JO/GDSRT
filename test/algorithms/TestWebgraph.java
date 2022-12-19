@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import controllers.ItemDataController;
 import controllers.TradeController;
 import controllers.UserController;
 import data.UserTradeGraph;
@@ -16,6 +17,7 @@ import data.UserTradeGraph.DetailLevel;
 import dto.Trade;
 import dto.TradeItem;
 import dto.TradeResult;
+import extensions.TestItemDataRetriever;
 import extensions.TestTradeDataRetriever;
 import extensions.TestUserDataRetriever;
 import user.User;
@@ -43,7 +45,7 @@ class TestWebgraph {
 	
 	@BeforeEach
 	void setup() {
-		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new TestUserDataRetriever(), false);
+		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new ItemDataController(new TestItemDataRetriever()), new TestUserDataRetriever());
 		User a = new User(TRADER_NAME_A, 0, null);
 		User b = new User(TRADER_NAME_B, 0, null);
 		User c = new User(TRADER_NAME_C, 0, null);

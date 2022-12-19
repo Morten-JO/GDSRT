@@ -10,16 +10,14 @@ import dto.Trade;
 
 public class TradeController {
 
-	private TradeAlgorithms tradeAlgorithms;
 	private ITradeDataRetriever tradeDataRetriever;
 	
 	public TradeController(ITradeDataRetriever tdr) {
 		this.tradeDataRetriever = tdr;
-		this.tradeAlgorithms = new TradeAlgorithms();
 	}
 	
 	public boolean addTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
-		Trade processedTrade = tradeAlgorithms.processTrade(trade, itemDataController, userController);
+		Trade processedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController);
 		try {
 			tradeDataRetriever.addTrade(processedTrade.getTradeId(), processedTrade.getTraderOne(), processedTrade.getTraderTwo(), processedTrade.getItemsOne(), processedTrade.getItemsTwo(), processedTrade.getTradeResult());
 		} catch (Exception e) {

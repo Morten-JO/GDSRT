@@ -16,7 +16,7 @@ import util.CheckSumGenerator;
 
 public class TradeAlgorithms {
 
-	public Trade processTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
+	public static Trade processTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
 		TradeResult result;
 		PricePoint valueOne = new PricePoint(0,0,0);
 		PricePoint valueTwo = new PricePoint(0,0,0);
