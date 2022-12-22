@@ -20,13 +20,15 @@ public class ItemDataController {
 	 * @return
 	 * @throws Exception 
 	 */
-	public ItemData addItem(String itemId, int value, Percentage itemCertaintyPercentage) throws Exception {
+	public ItemData addItem(String itemId, float value, Percentage itemCertaintyPercentage) throws Exception {
 		if(idr.itemExists(itemId)) {
 			ItemData data = idr.getItem(itemId);
 			idr.updateTotalTrades(itemId, data.getTotalTrades()+1);
 			if(data.getItemValueCertaintyPercentage().getPercentage() < itemCertaintyPercentage.getPercentage()) {
 				idr.updateCertaintyPercentage(itemId, itemCertaintyPercentage.getPercentage());
 			}
+			data.getEstimatedPrice().calculatePricesBasedOnValue(value);
+			idr.updatePrice(itemId, data.getEstimatedPrice());
 			return data;
 		} else {
 			ItemData data = new ItemData();
@@ -35,7 +37,7 @@ public class ItemDataController {
 			data.getEstimatedPrice().setMedianPrice(value);
 			data.setItemId(itemId);
 			data.setItemValueCertaintyPercentage(itemCertaintyPercentage);
-			data.setRecentTradeValues(new Integer[] {value});
+			data.setRecentTradeValues(new Integer[] {(int)value});
 			data.setTotalTrades(1);
 			if(idr.addItem(itemId, data.getEstimatedPrice(), data.getRecentTradeValues(), data.getTotalTrades(), data.getItemValueCertaintyPercentage().getPercentage())) {
 				return data;

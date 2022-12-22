@@ -3,6 +3,7 @@ package main;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 import config.LoadedConfigs;
 import config.LoadedConfigs.ConnectionType;
@@ -17,6 +18,7 @@ import db.DatabaseController;
 import db.DatabaseItemDataRetriever;
 import db.DatabaseTradeDataRetriever;
 import db.DatabaseUserDataRetriever;
+import dto.Percentage;
 import temp_db.TempDatabaseItemDataRetriever;
 import temp_db.TempDatabaseTradeDataRetriever;
 import temp_db.TempDatabaseUserDataRetriever;
@@ -66,6 +68,22 @@ public class Main {
 		TradeController tc = new TradeController(tdr);
 		UserController uc = new UserController(tc, udr, tdr, idr);
 		ItemDataController ic = new ItemDataController(idr);
+		//Floods prices into db
+		if(LoadedConfigs.FLOOD_PRICES) {
+			Map<String, Float> data = FileUtil.readItemFloodCSVFile(LoadedConfigs.FLOOD_PRICES_PATH);
+			if(data != null) {
+				for(Map.Entry<String, Float> entry : data.entrySet()) {
+					try {
+						ic.addItem(entry.getKey(), entry.getValue(), new Percentage(100));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				logger.writeLineToFile("Finishing flooding item prices.");
+			} else {
+				logger.writeLineToFile("Failed to flood item prices.");
+			}
+		}
 		
 		if(LoadedConfigs.CONNECTION_TYPE == ConnectionType.SOCKET) {
 			Server server;

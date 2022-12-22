@@ -1,6 +1,16 @@
 package util;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import config.LoadedConfigs;
@@ -22,6 +32,8 @@ public class FileUtil {
             LoadedConfigs.STRICTNESS_LEVEL = Integer.valueOf(prop.getProperty("STRICTNESS_LEVEL"));
             LoadedConfigs.CONNECTION_TYPE = LoadedConfigs.ConnectionType.valueOf(prop.getProperty("CONNECTION_TYPE").toUpperCase());
             LoadedConfigs.ENCRYPTION = Boolean.valueOf(prop.getProperty("ENCRYPTION"));
+            LoadedConfigs.FLOOD_PRICES = Boolean.valueOf(prop.getProperty("FLOOD_PRICES"));
+            LoadedConfigs.FLOOD_PRICES_PATH = prop.getProperty("FLOOD_PRICES_PATH");
             propsInput.close();
             return true;
         } catch (Exception e) {
@@ -29,5 +41,45 @@ public class FileUtil {
         }
 		return false;
 	}
+	
+	public static List<List<String>> readCSVFile(String path) throws IOException {
+		File file = new File(path);
+		if(!file.exists()) {
+			throw new FileNotFoundException(path);
+		}
+		FileReader reader = new FileReader(file);
+		List<List<String>> records = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(reader)) {
+		    String line;
+		    while ((line = br.readLine()) != null) {
+		        String[] values = line.split(",");
+		        records.add(Arrays.asList(values));
+		    }
+		}
+		return records;
+	}
+	
+	public static Map<String, Float> readItemFloodCSVFile(String path){
+		Map<String, Float> map = new HashMap<>();
+		try {
+			List<List<String>> csvFile = readCSVFile(path);
+			for(List<String> entry : csvFile) {
+				if(entry.size() >= 2) {
+					try {
+						float val = Float.parseFloat(entry.get(1));
+						map.put(entry.get(0), val);
+					} catch(NumberFormatException e) {
+						e.printStackTrace();
+						continue;
+					}
+				}
+			}
+			return map;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	
 }

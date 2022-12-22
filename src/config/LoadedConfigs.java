@@ -20,5 +20,7 @@ public class LoadedConfigs {
 	public static ConnectionType CONNECTION_TYPE  = ConnectionType.SOCKET;
 	public static int INCOMING_SERVER_PORT = 1234;
 	public static boolean ENCRYPTION = false;
+	public static boolean FLOOD_PRICES = false;
+	public static String FLOOD_PRICES_PATH = "items.csv";
 	
 }

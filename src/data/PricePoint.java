@@ -2,6 +2,8 @@ package data;
 
 public class PricePoint {
 
+	private final static float TRADE_INCREMENT_PERCENTAGER = 0.005f;
+	
 	private float minimumPrice = 0f;
 	private float maximumPrice = 0f;
 	private float medianPrice = 0f;
@@ -29,6 +31,27 @@ public class PricePoint {
 		}
 		return false;
 	}
+	
+	public boolean calculatePricesBasedOnValue(float value) {
+		if(minimumPrice > value) {
+			minimumPrice = value;
+		} else if(maximumPrice < value) {
+			maximumPrice = value;
+		} else {
+			float minDiff = (value - minimumPrice) * TRADE_INCREMENT_PERCENTAGER;
+			float maxDiff = (maximumPrice - value) * TRADE_INCREMENT_PERCENTAGER;
+			minimumPrice += minDiff;
+			maximumPrice -= maxDiff;
+			if(minimumPrice > medianPrice) {
+				minimumPrice = medianPrice;
+			}
+			if(maximumPrice < medianPrice) {
+				maximumPrice = medianPrice;
+			}
+		}
+		return true;
+	}
+	
 	public float getMinimumPrice() {
 		return minimumPrice;
 	}
