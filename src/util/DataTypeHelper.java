@@ -41,10 +41,8 @@ public class DataTypeHelper {
 			vals = string.split(",");
 			List<TradeItem> items = new ArrayList<>();
 			for(String elem : vals) {
-				TradeItem item = new TradeItem();
 				String[] dataSplit = elem.split(";");
-				item.setItemId(dataSplit[0]);
-				item.setQuantity(Integer.parseInt(dataSplit[1]));
+				TradeItem item = new TradeItem(dataSplit[0], Integer.parseInt(dataSplit[1]));
 				items.add(item);
 			}
 			return items;
@@ -66,12 +64,12 @@ public class DataTypeHelper {
 	}
 	
 	public static Trade tradeStringToTrade(String trade) {
-		Map<String, String> map = Arrays.stream(trade.split(","))
+		Map<String, String> map = Arrays.stream(trade.replace("{", "").replace("}", "").split(","))
 				.map(entry -> entry.split("="))
 			    .collect(Collectors.toMap(entry -> entry[0], entry -> entry[1]));
 		Trade convertedTrade = new Trade();
-		convertedTrade.setTraderOne(map.get("TraderOne"));
-		convertedTrade.setTraderTwo(map.get("TraderTwo"));
+		convertedTrade.setTraderOne(map.get("traderOne"));
+		convertedTrade.setTraderTwo(map.get("traderTwo"));
 		convertedTrade.setItemsOne(mapToTradeItems(map, "traderOne"));
 		convertedTrade.setItemsTwo(mapToTradeItems(map, "traderTwo"));
 		return convertedTrade;
@@ -83,9 +81,7 @@ public class DataTypeHelper {
 		while(true) {
 			if(map.containsKey(prefix+iterator)) {
 				String[] tradeItemData = map.get(prefix+iterator).split(":");
-				TradeItem item = new TradeItem();
-				item.setItemId(tradeItemData[0]);
-				item.setQuantity(Integer.valueOf(tradeItemData[1]));
+				TradeItem item = new TradeItem(tradeItemData[0], Integer.valueOf(tradeItemData[1]));
 				items.add(item);
 				iterator++;
 			} else {

@@ -63,7 +63,7 @@ public class Connection {
 								closeConnection();
 							}
 						} catch (Exception e) {
-							// TODO
+							e.printStackTrace();
 						}
 					}
 					exitConnection();

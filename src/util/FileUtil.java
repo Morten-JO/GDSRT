@@ -34,6 +34,7 @@ public class FileUtil {
             LoadedConfigs.ENCRYPTION = Boolean.valueOf(prop.getProperty("ENCRYPTION"));
             LoadedConfigs.FLOOD_PRICES = Boolean.valueOf(prop.getProperty("FLOOD_PRICES"));
             LoadedConfigs.FLOOD_PRICES_PATH = prop.getProperty("FLOOD_PRICES_PATH");
+            LoadedConfigs.INCOMING_SERVER_PORT = Integer.valueOf(prop.getProperty("SERVER_PORT"));
             propsInput.close();
             return true;
         } catch (Exception e) {

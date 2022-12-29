@@ -22,7 +22,7 @@ public class DatabaseItemDataRetriever implements IItemDataRetriever{
 	
 	@Override
 	public ItemData getItem(String itemId) throws Exception {
-		PreparedStatement statement = dbController.prepareSafeStatement("select * from " + dbController.getDatabaseName() + "."+tableName+" where ITEM_ID = ?");
+		PreparedStatement statement = dbController.prepareSafeStatement("select * from "+tableName+" where ITEM_ID = ?");
 		statement.setString(1, itemId);
 		ResultSet itemData = statement.executeQuery();
 		if(itemData.next()) {

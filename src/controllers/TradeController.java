@@ -7,6 +7,7 @@ import algorithms.TradeAlgorithms;
 import data.UserTradeGraph;
 import data_retrievers.ITradeDataRetriever;
 import dto.Trade;
+import util.DataTypeGenerator;
 
 public class TradeController {
 
@@ -19,6 +20,9 @@ public class TradeController {
 	public boolean addTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
 		Trade processedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController);
 		try {
+			if(processedTrade.getTradeId() == null) {
+				processedTrade.setTradeId(DataTypeGenerator.generatedTradeId());
+			}
 			tradeDataRetriever.addTrade(processedTrade.getTradeId(), processedTrade.getTraderOne(), processedTrade.getTraderTwo(), processedTrade.getItemsOne(), processedTrade.getItemsTwo(), processedTrade.getTradeResult());
 		} catch (Exception e) {
 			e.printStackTrace();

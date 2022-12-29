@@ -57,16 +57,18 @@ public class ClientConnection extends Connection {
 
 	@Override
 	protected void handleInput(String input) {
+		System.out.println("Received: "+input);
 		count = System.currentTimeMillis(); // Resetting keep alive since a
 											// message was received.
 		if (input.startsWith("PING")) {
 			addMessageToSend(input);
 			return;
 		}
-		if (input.startsWith("LR")) {
+		if (input.startsWith("TR")) {
 			String[] values = input.split(" ");
 			if(values.length  >= 2) {
-				hostServer.newTradeMessage(values[1]);
+				hostServer.newTradeMessage(input.substring(3));
+				addMessageToSend("TRR");
 			}
 			return;
 		}

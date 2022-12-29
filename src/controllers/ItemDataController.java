@@ -6,7 +6,6 @@ import dto.Percentage;
 
 public class ItemDataController {
 
-	//TODO Maybe make it so an transistent version of the items are present.
 	private IItemDataRetriever idr;
 	
 	public ItemDataController(IItemDataRetriever idr) {

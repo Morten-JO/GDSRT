@@ -4,9 +4,12 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import util.DebugDocumentLogger;
 
@@ -43,7 +46,7 @@ public class DatabaseController {
 				while (databaseConnectionRunning) {
 					if (System.currentTimeMillis() - timeOnLastQuery > TIME_PER_KEEP_ALIVE_QUERY) {
 						try {
-							PreparedStatement statement = prepareSafeStatement("select * from " + databaseName + ".user where USER_ID = ?");
+							PreparedStatement statement = prepareSafeStatement("select * from " + databaseName + ".users where USER_ID = ?");
 							statement.setString(1, "");
 							statement.executeQuery();
 						} catch (SQLException e) {
@@ -65,10 +68,24 @@ public class DatabaseController {
 	}
 	
 	private boolean checkDatabaseDetails() {
+		ResultSet resultSet;
+		List<String> tableNames = new ArrayList<>();
+		try {
+			resultSet = connect.getMetaData().getTables(null, null, null, new String[] {"TABLE"});
+			while (resultSet.next()) {
+			    String name = resultSet.getString("TABLE_NAME");
+			    String schema = resultSet.getString("TABLE_SCHEM");
+			    tableNames.add(name);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		// check player
 		try {
-			Statement statement = connect.createStatement();
-			statement.executeQuery("select 1 from " + databaseName + ".users limit 1;");
+			if(!tableNames.contains("users")) {
+				Statement statement = connect.createStatement();
+				statement.executeQuery("select 1 from " + databaseName + ".users limit 1;");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -79,8 +96,10 @@ public class DatabaseController {
 			}
 		}
 		try {
-			Statement statement = connect.createStatement();
-			statement.executeQuery("select 1 from " + databaseName + ".trades limit 1;");
+			if(!tableNames.contains("trades")) {
+				Statement statement = connect.createStatement();
+				statement.executeQuery("select 1 from " + databaseName + ".trades limit 1;");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -91,8 +110,10 @@ public class DatabaseController {
 			}
 		}
 		try {
-			Statement statement = connect.createStatement();
-			statement.executeQuery("select 1 from " + databaseName + ".items limit 1;");
+			if(!tableNames.contains("items")) {
+				Statement statement = connect.createStatement();
+				statement.executeQuery("select 1 from " + databaseName + ".items limit 1;");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			try {
@@ -126,7 +147,7 @@ public class DatabaseController {
 
 	private boolean createItemsTable() throws SQLException {
 		PreparedStatement statement = prepareSafeStatement(
-				"create table items(ITEM_ID VARCHAR(30), MINIMUM FLOAT not null default 0, MEDIAN FLOAT not null default 0, MAXIMUM FLOAT not null default 0, RECENT_TRADE_VALUES INT ARRAY[50], INT TOTAL_TRADES not null default 0, INT CERTAINTY_PERCENTAGE not null default 0, PRIMARY KEY(ITEM_ID))");
+				"create table items(ITEM_ID VARCHAR(30), MINIMUM FLOAT not null default 0, MEDIAN FLOAT not null default 0, MAXIMUM FLOAT not null default 0, RECENT_TRADE_VALUES INT ARRAY[50], TOTAL_TRADES INT not null default 0, CERTAINTY_PERCENTAGE INT not null default 0, PRIMARY KEY(ITEM_ID))");
 		return statement.execute();
 	}
 

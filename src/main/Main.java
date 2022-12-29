@@ -47,8 +47,8 @@ public class Main {
 		if(LoadedConfigs.DB_TYPE == LoadedConfigs.DatabaseType.POSTGRESQL) {
 			try {
 				dbc = new DatabaseController(LoadedConfigs.DB_HOST, LoadedConfigs.DB_TYPE.toString(), LoadedConfigs.DB_NAME, LoadedConfigs.DB_USER, LoadedConfigs.DB_PASS, LoadedConfigs.DB_PORT, logger);
-				tdr = new DatabaseTradeDataRetriever(dbc);
 				udr = new DatabaseUserDataRetriever(dbc);
+				tdr = new DatabaseTradeDataRetriever(dbc, (DatabaseUserDataRetriever)udr);
 				idr = new DatabaseItemDataRetriever(dbc);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();

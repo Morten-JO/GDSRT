@@ -19,9 +19,12 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 	
 	private DatabaseController dbController;
 	
-	public DatabaseTradeDataRetriever(DatabaseController dbController) {
+	private DatabaseUserDataRetriever userRetriever;
+	
+	public DatabaseTradeDataRetriever(DatabaseController dbController, DatabaseUserDataRetriever userRetriever) {
 		this.dbController = dbController;
 		this.tableName = "trades";
+		this.userRetriever = userRetriever;
 	}
 	
 	@Override
@@ -80,8 +83,15 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 		if(tradeExists(tradeId)) {
 			return false;
 		}
+		if(!userRetriever.userExists(traderOne)) {
+			userRetriever.addUser(traderOne, 0, "{}");
+		}
+		if(!userRetriever.userExists(traderTwo)) {
+			userRetriever.addUser(traderTwo, 0, "{}");
+		}
 		
-		PreparedStatement statement = dbController.prepareSafeStatement("insert into " + dbController.getDatabaseName() + "."+tableName+" (TRADE_ID, TRADER_ONE_ID, TRADER_TWO_ID, ITEMS_ONE, ITEMS_TWO, TRADE_CALCULATED, TRADE_MIN_DIFF, TRADE_MED_DIFF, TRADE_MAX_DIFF, TRADE_WARNING_LEVEL, TIME_STAMP, CHECK_SUM, ADD_DATA) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		//" + dbController.getDatabaseName() + "."+
+		PreparedStatement statement = dbController.prepareSafeStatement("insert into "+tableName+" (TRADE_ID, TRADER_ONE_ID, TRADER_TWO_ID, ITEMS_ONE, ITEMS_TWO, TRADE_CALCULATED, TRADE_MIN_DIFF, TRADE_MED_DIFF, TRADE_MAX_DIFF, TRADE_WARNING_LEVEL, TIME_STAMP, CHECK_SUM, ADD_DATA) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		statement.setString(1, tradeId);
 		statement.setString(2, traderOne);
 		statement.setString(3, traderTwo);
@@ -94,7 +104,7 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 		statement.setInt(10, tradeResult.getTradeWarningLevel());
 		statement.setString(11, tradeResult.getTimeStampCalculated());
 		statement.setString(12, tradeResult.getChecksum());
-		statement.setString(13, "");
+		statement.setString(13, "{}");
 		dbController.getConnection().setAutoCommit(false);
 		statement.executeUpdate();
 		dbController.getConnection().commit();
@@ -123,13 +133,19 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 	}
 
 	@Override
-	public boolean tradeExists(String tradeId) throws Exception {
-		PreparedStatement statement = dbController.prepareSafeStatement("select 1 from " + dbController.getDatabaseName() + "."+tableName+" where TRADE_ID = ?");
-		statement.setString(1, tradeId);
-		ResultSet set = statement.executeQuery();
-		if(set.next()) {
-			return true;
+	public boolean tradeExists(String tradeId){
+		PreparedStatement statement;
+		try {
+			statement = dbController.prepareSafeStatement("select 1 from " + dbController.getDatabaseName() + "."+tableName+" where TRADE_ID = ?");
+			statement.setString(1, tradeId);
+			ResultSet set = statement.executeQuery();
+			if(set.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			return false;
 		}
+		
 		return false;
 	}
 	

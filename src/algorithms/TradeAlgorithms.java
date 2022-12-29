@@ -12,7 +12,7 @@ import dto.Trade;
 import dto.TradeItem;
 import dto.TradeResult;
 import dto.TradeResult.TradeCalculated;
-import util.CheckSumGenerator;
+import util.DataTypeGenerator;
 
 public class TradeAlgorithms {
 
@@ -47,7 +47,6 @@ public class TradeAlgorithms {
 			tradeNulled = true;
 		}
 		if(tradeNulled) {
-			//TODO estimate prices and add
 			int pricePerItemOne = 0;
 			if(trade.getItemsOne().size() > 0) {
 				pricePerItemOne = (int) (valueOne.getMedianPrice() / (trade.getItemsOne().size() - tradeOneNotRegistered.size()));
@@ -64,7 +63,7 @@ public class TradeAlgorithms {
 			} else if(pricePerItemTwo != 0) {
 				averagePricePerItem = pricePerItemTwo;
 			} else {
-				result = new TradeResult(TradeCalculated.INCONCLUSIVE, 0, 0, 0, 0, CheckSumGenerator.generateCheckSum(trade));
+				result = new TradeResult(TradeCalculated.INCONCLUSIVE, 0, 0, 0, 0, DataTypeGenerator.generateCheckSum(trade));
 				trade.setTradeResult(result);
 				return trade;
 			}
@@ -84,9 +83,9 @@ public class TradeAlgorithms {
 					e.printStackTrace();
 				}
 			}
-			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, CheckSumGenerator.generateCheckSum(trade));
+			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, DataTypeGenerator.generateCheckSum(trade));
 		} else {
-			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, CheckSumGenerator.generateCheckSum(trade));
+			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, DataTypeGenerator.generateCheckSum(trade));
 			if(valueTwo.isInBounds(valueOne)) {
 				result.setTradeWarningLevel(0);
 			} else {
