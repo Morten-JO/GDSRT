@@ -1,6 +1,7 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import controllers.ItemDataController;
@@ -13,6 +14,7 @@ import dto.TradeItem;
 import dto.TradeResult;
 import dto.TradeResult.TradeCalculated;
 import util.DataTypeGenerator;
+import util.ValueUtil;
 
 public class TradeAlgorithms {
 
@@ -21,71 +23,100 @@ public class TradeAlgorithms {
 		PricePoint valueOne = new PricePoint(0,0,0);
 		PricePoint valueTwo = new PricePoint(0,0,0);
 		int itemsNotRegistered = 0;
+		
+		
+		
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
+		float itemsOneAverageCertainty = 0f;
+		int itemsOneCount = 0;
+		HashMap<String, ItemData> valuesExtractedOne = new HashMap<>();
 		for(TradeItem item : trade.getItemsOne()) {
+			itemsOneCount += item.getQuantity();
 			ItemData value = itemDataController.getItem(item.getItemId());
 			if(value != null) {
+				if(value.getEstimatedPrice().getMedianPrice() <= 0.001f) {
+					value.setEstimatedPrice(new PricePoint(100f, 100f, 100f));
+				}
+				valuesExtractedOne.put(item.getItemId(), value);
+				itemsOneAverageCertainty += value.getItemValueCertaintyPercentage().getPercentage();
 				valueOne.incrementAll(item.getQuantity(), value.getEstimatedPrice());
 			} else {
 				itemsNotRegistered++;
 				tradeOneNotRegistered.add(item);
+				valueOne.incrementAll(item.getQuantity(), new PricePoint(100f, 100f, 100f));
 			}
 		}
+		itemsOneAverageCertainty /= trade.getItemsOne().size();
+		
+		
+		
 		List<TradeItem> tradeTwoNotRegistered = new ArrayList<>();
+		float itemsTwoAverageCertainty = 0f;
+		int itemsTwoCount = 0;
+		HashMap<String, ItemData> valuesExtractedTwo = new HashMap<>();
 		for(TradeItem item : trade.getItemsTwo()) {
+			itemsTwoCount += item.getQuantity();
 			ItemData value = itemDataController.getItem(item.getItemId());
 			if(value != null) {
+				if(value.getEstimatedPrice().getMedianPrice() <= 0.001f) {
+					value.setEstimatedPrice(new PricePoint(100f, 100f, 100f));
+				}
+				valuesExtractedTwo.put(item.getItemId(), value);
+				itemsTwoAverageCertainty += value.getItemValueCertaintyPercentage().getPercentage();
 				valueTwo.incrementAll(item.getQuantity(), value.getEstimatedPrice());
 			} else {
 				itemsNotRegistered++;
 				tradeTwoNotRegistered.add(item);
+				valueTwo.incrementAll(item.getQuantity(), new PricePoint(100f, 100f, 100f));
 			}
 		}
+		itemsTwoAverageCertainty /= trade.getItemsTwo().size();
+		
 		boolean tradeNulled = false;
 		int totalItems = trade.getItemsOne().size() + trade.getItemsTwo().size();
 		if(totalItems / 3.0f < itemsNotRegistered) {
 			tradeNulled = true;
 		}
+		int pricePerItemOne = 0;
+		if(trade.getItemsOne().size() > 0) {
+			pricePerItemOne = (int) (valueOne.getMedianPrice() / (trade.getItemsOne().size()));
+		}
+		int pricePerItemTwo = 0;
+		if(trade.getItemsTwo().size() > 0) {
+			pricePerItemTwo = (int) (valueTwo.getMedianPrice() / (trade.getItemsTwo().size()));
+		}
+		int averagePricePerItem;
+		if(pricePerItemOne != 0 && pricePerItemTwo != 0) {
+			averagePricePerItem = (pricePerItemOne + pricePerItemTwo) / 2;
+		} else if(pricePerItemOne != 0) {
+			averagePricePerItem = pricePerItemOne;
+		} else if(pricePerItemTwo != 0) {
+			averagePricePerItem = pricePerItemTwo;
+		} else {
+			result = new TradeResult(TradeCalculated.INCONCLUSIVE, 0, 0, 0, 0, DataTypeGenerator.generateCheckSum(trade));
+			trade.setTradeResult(result);
+			return trade;
+		}
+		for(TradeItem item : tradeOneNotRegistered) {
+			int itemValue = averagePricePerItem / item.getQuantity();
+			try {
+				itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for(TradeItem item : tradeTwoNotRegistered) {
+			int itemValue = averagePricePerItem / item.getQuantity();
+			try {
+				itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		if(tradeNulled) {
-			int pricePerItemOne = 0;
-			if(trade.getItemsOne().size() > 0) {
-				pricePerItemOne = (int) (valueOne.getMedianPrice() / (trade.getItemsOne().size() - tradeOneNotRegistered.size()));
-			}
-			int pricePerItemTwo = 0;
-			if(trade.getItemsTwo().size() > 0) {
-				pricePerItemTwo = (int) (valueTwo.getMedianPrice() / (trade.getItemsTwo().size() - tradeTwoNotRegistered.size()));
-			}
-			int averagePricePerItem;
-			if(pricePerItemOne != 0 && pricePerItemTwo != 0) {
-				averagePricePerItem = (pricePerItemOne + pricePerItemTwo) / 2;
-			} else if(pricePerItemOne != 0) {
-				averagePricePerItem = pricePerItemOne;
-			} else if(pricePerItemTwo != 0) {
-				averagePricePerItem = pricePerItemTwo;
-			} else {
-				result = new TradeResult(TradeCalculated.INCONCLUSIVE, 0, 0, 0, 0, DataTypeGenerator.generateCheckSum(trade));
-				trade.setTradeResult(result);
-				return trade;
-			}
-			for(TradeItem item : tradeOneNotRegistered) {
-				int itemValue = averagePricePerItem / item.getQuantity();
-				try {
-					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			for(TradeItem item : tradeTwoNotRegistered) {
-				int itemValue = averagePricePerItem / item.getQuantity();
-				try {
-					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
 			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, DataTypeGenerator.generateCheckSum(trade));
 		} else {
-			result = new TradeResult(TradeCalculated.COMPLETED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, DataTypeGenerator.generateCheckSum(trade));
+			result = new TradeResult(TradeCalculated.FINALIZED, Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice()), Math.abs(valueOne.getMinimumPrice() - valueTwo.getMinimumPrice()), Math.abs(valueOne.getMaximumPrice() - valueTwo.getMaximumPrice()), 0, DataTypeGenerator.generateCheckSum(trade));
 			if(valueTwo.isInBounds(valueOne)) {
 				result.setTradeWarningLevel(0);
 			} else {
@@ -114,6 +145,125 @@ public class TradeAlgorithms {
 				}
 			}
 		}
+		boolean itemsOneToCalcFor = false;
+		if(ValueUtil.isAroundEqual(itemsTwoAverageCertainty, itemsOneAverageCertainty, 0.1f)) {
+			if(itemsOneAverageCertainty <= 0.05f) {
+				if(valueOne.getMedianPrice() > valueTwo.getMedianPrice()) {
+					itemsOneToCalcFor = true;
+				}
+			} else {
+				if(itemsOneCount > itemsTwoCount) {
+					itemsOneToCalcFor = true;
+				}
+			}
+		} else {
+			if(itemsOneAverageCertainty > itemsTwoAverageCertainty) {
+				itemsOneToCalcFor = true;
+			}
+		}
+		//Update prices
+		if(itemsOneToCalcFor) {
+			for(TradeItem item : trade.getItemsTwo()) {
+				if(tradeTwoNotRegistered.contains(item)) {
+					continue;
+				}
+				float newValue;
+				float value = valueOne.getMedianPrice();
+				float valueWithoutThis;
+				ItemData data = null;
+				if(valuesExtractedTwo.containsKey(item.getItemId())) {
+					valueWithoutThis = valueTwo.getMedianPrice() - valuesExtractedTwo.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					newValue = valuesExtractedTwo.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					data = valuesExtractedTwo.get(item.getItemId());
+				} else {
+					valueWithoutThis = valueTwo.getMedianPrice() - 100f;
+					newValue = 100f;
+				}
+				
+				float valueDiff = value - valueWithoutThis;
+				if(valueDiff < 0f) {
+					newValue -= Math.max(valueDiff, newValue/2.0f);
+				} else {
+					newValue += Math.max(valueDiff, newValue/2.0f);
+				}
+				
+				try {
+					Percentage percentage;
+					if(data != null) {
+						percentage = data.getItemValueCertaintyPercentage();
+						if((data.getTotalTrades() + 1) % 5 == 0 && percentage.getPercentage() < 100) {
+							percentage.setPercentage(percentage.getPercentage() + 1);
+						}
+					} else {
+						percentage = new Percentage(0);
+					}
+					itemDataController.addItem(item.getItemId(), newValue, percentage);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			for(TradeItem item : trade.getItemsOne()) {
+				if(tradeOneNotRegistered.contains(item)) {
+					continue;
+				}
+				try {
+					itemDataController.increaseTotalTrades(item.getItemId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			for(TradeItem item : trade.getItemsOne()) {
+				if(tradeOneNotRegistered.contains(item)) {
+					continue;
+				}
+				float newValue;
+				float value = valueTwo.getMedianPrice();
+				float valueWithoutThis;
+				ItemData data = null;
+				if(valuesExtractedOne.containsKey(item.getItemId())) {
+					valueWithoutThis = valueOne.getMedianPrice() - valuesExtractedOne.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					newValue = valuesExtractedOne.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					data = valuesExtractedOne.get(item.getItemId());
+				} else {
+					valueWithoutThis = valueOne.getMedianPrice() - 100f;
+					newValue = 100f;
+				}
+				
+				float valueDiff = value - valueWithoutThis;
+				if(valueDiff < 0f) {
+					newValue -= Math.max(valueDiff, newValue/2.0f);
+				} else {
+					newValue += Math.max(valueDiff, newValue/2.0f);
+				}
+				
+				try {
+					Percentage percentage;
+					if(data != null) {
+						percentage = data.getItemValueCertaintyPercentage();
+						if((data.getTotalTrades() + 1) % 5 == 0 && percentage.getPercentage() < 100) {
+							percentage.setPercentage(percentage.getPercentage() + 1);
+						}
+					} else {
+						percentage = new Percentage(0);
+					}
+					itemDataController.addItem(item.getItemId(), newValue, percentage);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			for(TradeItem item : trade.getItemsTwo()) {
+				if(tradeTwoNotRegistered.contains(item)) {
+					continue;
+				}
+				try {
+					itemDataController.increaseTotalTrades(item.getItemId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		if(result.getTradeWarningLevel() > 5) {
 			userController.requestUserCheck(trade.getTraderOne());
 			userController.requestUserCheck(trade.getTraderTwo());

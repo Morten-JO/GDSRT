@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import data.UserTradeGraph.DetailLevel;
+import util.TradeGraphUtil;
+
 
 public class ClientConnection extends Connection {
 
@@ -71,6 +74,20 @@ public class ClientConnection extends Connection {
 				addMessageToSend("TRR");
 			}
 			return;
+		}
+		if(input.startsWith("UTG")) {
+			String[] values = input.split(" ");
+			if(values.length == 4) {
+				String name = values[1];
+				try {
+					int warning = Integer.parseInt(values[2]);
+					int layers = Integer.parseInt(values[3]);
+					TradeGraphUtil.writeUserGraphFile(hostServer.getUserController().retrieveGraphForUser(name, layers, DetailLevel.ALL), warning);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
+				}
+			}
 		}
 	}
 

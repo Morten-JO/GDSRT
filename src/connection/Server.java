@@ -117,4 +117,8 @@ public class Server {
 		this.decryptionKey = privateKey;
 	}
 	
+	public UserController getUserController() {
+		return uc;
+	}
+	
 }

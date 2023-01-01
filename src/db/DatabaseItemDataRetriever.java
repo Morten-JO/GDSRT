@@ -129,4 +129,17 @@ public class DatabaseItemDataRetriever implements IItemDataRetriever{
 		return false;
 	}
 
+	@Override
+	public boolean incrementTotalTrades(String itemId) throws Exception {
+		if(itemExists(itemId)) {
+			PreparedStatement statementUpdate = dbController.prepareSafeStatement("update " + dbController.getDatabaseName() + "."+tableName+" set TOTAL_TRADES = TOTAL_TRADES + 1 where ITEM_ID = ?");
+			statementUpdate.setString(1, itemId);
+			int res = statementUpdate.executeUpdate();
+			if(res != 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

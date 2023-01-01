@@ -88,4 +88,15 @@ public class TempDatabaseItemDataRetriever implements IItemDataRetriever{
 		return mapOfData.containsKey(itemId);
 	}
 
+	@Override
+	public boolean incrementTotalTrades(String itemId) throws Exception {
+		if(itemExists(itemId)) {
+			return false;
+		}
+		ItemData data = new ItemData();
+		data.setItemId(itemId);
+		data.setTotalTrades(data.getTotalTrades() + 1);
+		return true;
+	}
+
 }

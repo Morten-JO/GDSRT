@@ -66,7 +66,7 @@ public class Main {
 			return;
 		}
 		TradeController tc = new TradeController(tdr);
-		UserController uc = new UserController(tc, udr, tdr, idr);
+		UserController uc = new UserController(tc, udr, tdr, idr, logger);
 		ItemDataController ic = new ItemDataController(idr);
 		//Floods prices into db
 		if(LoadedConfigs.FLOOD_PRICES) {

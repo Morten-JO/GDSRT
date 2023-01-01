@@ -7,6 +7,9 @@ public class AdditionalDataConverter {
 
 	public static Map<String, String> stringToMap(String str){
 		Map<String, String> map = new HashMap<>();
+		if(str == null) {
+			return map;
+		}
 		String[] sets = str.split(",");
 		for(String set : sets) {
 			String[] values = set.split(":");

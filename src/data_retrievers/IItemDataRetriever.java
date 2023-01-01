@@ -19,4 +19,6 @@ public interface IItemDataRetriever {
 	
 	public boolean itemExists(String itemId) throws Exception;
 	
+	public boolean incrementTotalTrades(String itemId) throws Exception;
+	
 }

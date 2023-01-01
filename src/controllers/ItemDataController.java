@@ -46,6 +46,10 @@ public class ItemDataController {
 		}
 	}
 	
+	public boolean increaseTotalTrades(String itemId) throws Exception {
+		return idr.incrementTotalTrades(itemId);
+	}
+	
 	public ItemData getItem(String itemId) {
 		try {
 			return idr.getItem(itemId);

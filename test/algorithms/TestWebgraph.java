@@ -45,7 +45,7 @@ class TestWebgraph {
 	
 	@BeforeEach
 	void setup() {
-		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new ItemDataController(new TestItemDataRetriever()), new TestUserDataRetriever());
+		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new ItemDataController(new TestItemDataRetriever()), new TestUserDataRetriever(), null);
 		User a = new User(TRADER_NAME_A, 0, null);
 		User b = new User(TRADER_NAME_B, 0, null);
 		User c = new User(TRADER_NAME_C, 0, null);

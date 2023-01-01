@@ -49,4 +49,10 @@ public class TestItemDataRetriever implements IItemDataRetriever{
 		return false;
 	}
 
+	@Override
+	public boolean incrementTotalTrades(String itemId) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

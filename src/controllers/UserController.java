@@ -19,6 +19,7 @@ import dto.TradeResult;
 import rules.TradeRules;
 import user.User;
 import util.DateStamper;
+import util.DebugDocumentLogger;
 
 public class UserController extends TimerTask{
 
@@ -30,6 +31,7 @@ public class UserController extends TimerTask{
 	private IUserDataRetriever userDataRetriever;
 	private ITradeDataRetriever tradeDataRetriever;
 	private IItemDataRetriever itemDataRetriever;
+	private DebugDocumentLogger logger;
 	
 	/**
 	 * No userChecksEnabled
@@ -37,10 +39,11 @@ public class UserController extends TimerTask{
 	 * @param userDataRetriever
 	 * @param userChecksEnabled
 	 */
-	public UserController(TradeController tc, ItemDataController idc, IUserDataRetriever userDataRetriever) {
+	public UserController(TradeController tc, ItemDataController idc, IUserDataRetriever userDataRetriever, DebugDocumentLogger logger) {
 		this.tradeController = tc;
 		this.itemDataController = idc;
 		this.userDataRetriever = userDataRetriever;
+		this.logger = logger;
 	}
 	
 	/**
@@ -49,11 +52,12 @@ public class UserController extends TimerTask{
 	 * @param userDataRetriever
 	 * @param userChecksEnabled
 	 */
-	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, ITradeDataRetriever tradeDataRetriever, IItemDataRetriever itemDataRetriever) {
+	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, ITradeDataRetriever tradeDataRetriever, IItemDataRetriever itemDataRetriever, DebugDocumentLogger logger) {
 		this.tradeController = tc;
 		this.userDataRetriever = userDataRetriever;
 		this.tradeDataRetriever = tradeDataRetriever;
 		this.itemDataRetriever = itemDataRetriever;
+		this.logger = logger;
 		Timer t = new Timer();
 		t.scheduleAtFixedRate(this, DURATION_PER_CHECK*5L, DURATION_PER_CHECK);
 		
@@ -129,6 +133,8 @@ public class UserController extends TimerTask{
 			newWarningLevel += processedTrade.getTradeResult().getTradeWarningLevel();
 		}
 		if(Math.abs(newWarningLevel - oldWarningLevel) > oldWarningLevel / 10f) {
+			if(logger != null)
+				logger.writeLineToFile("User: "+userId+" warning level was increased");
 			user.setCurrentAggroLevel(user.getCurrentAggroLevel() + 1);
 			for(Trade trade : newTradesProcessed) {
 				tradeDataRetriever.updateTradeResult(trade.getTradeId(), trade.getTradeResult());
