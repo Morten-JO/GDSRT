@@ -18,12 +18,19 @@ public class PriceFlooder {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			if(itemData != null) {
-				try {
-					idr.addItem(key, new PricePoint(value, value, value), new Integer[] {}, 0, 50);
-				} catch (Exception e) {
-					e.printStackTrace();
+			try {
+				Integer[] trades;
+				int totalTrades;
+				if(itemData != null) {
+					trades = itemData.getRecentTradeValues();
+					totalTrades = itemData.getTotalTrades();
+				} else {
+					trades = new Integer[] {};
+					totalTrades = 0;
 				}
+				idr.addItem(key, new PricePoint(value, value, value), trades, totalTrades, 50);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		return true;
