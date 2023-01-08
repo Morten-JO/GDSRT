@@ -1,42 +1,66 @@
 package temp_db;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import data_retrievers.IUserDataRetriever;
-import db.DatabaseController;
 import user.User;
+import util.AdditionalDataConverter;
 
 public class TempDatabaseUserDataRetriever implements IUserDataRetriever{
 
+	private List<User> listOfUsers = new ArrayList<>();
+	
 	public TempDatabaseUserDataRetriever() {
 		
 	}
 	
 	@Override
 	public User getUser(String userId) throws Exception {
-		// TODO Auto-generated method stub
+		for(User user : listOfUsers) {
+			if(user.getUserIdentification().equals(userId)) {
+				return user;
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public boolean updateUserEyeLevel(String userId, int eyeLevel) throws Exception {
-		// TODO Auto-generated method stub
+		for(User user : listOfUsers) {
+			if(user.getUserIdentification().equals(userId)) {
+				user.setCurrentAggroLevel(eyeLevel);
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean updateUserAdditionalData(String userId, String additionalData) throws Exception {
-		// TODO Auto-generated method stub
+		for(User user : listOfUsers) {
+			if(user.getUserIdentification().equals(userId)) {
+				user.setAdditionalData(AdditionalDataConverter.stringToMap(additionalData));
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean addUser(String userId, int eyeLevel, String additionalData) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		User user = new User(userId, eyeLevel, additionalData);
+		listOfUsers.add(user);
+		return true;
 	}
 
 	@Override
 	public boolean userExists(String userId) throws Exception {
-		// TODO Auto-generated method stub
+		for(User user : listOfUsers) {
+			if(user.getUserIdentification().equals(userId)) {
+				return true;
+			}
+		}
 		return false;
 	}
 

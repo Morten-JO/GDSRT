@@ -45,7 +45,7 @@ public class TestTradeAlgorithm {
 		itemsTwo.add(new TradeItem("itemTwo", quantityTwo));
 		trade.setItemsOne(itemsOne);
 		trade.setItemsTwo(itemsTwo);
-		Trade returnedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController);
+		Trade returnedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController, true);
 		return returnedTrade;
 	}
 	

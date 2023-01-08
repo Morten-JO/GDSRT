@@ -80,6 +80,7 @@ public class TempDatabaseItemDataRetriever implements IItemDataRetriever{
 		data.setRecentTradeValues(recentTrades);
 		data.setTotalTrades(totalTrades);
 		data.setItemValueCertaintyPercentage(new Percentage(certaintyPercentage));
+		mapOfData.put(itemId, data);
 		return true;
 	}
 

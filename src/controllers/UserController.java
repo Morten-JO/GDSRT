@@ -1,5 +1,6 @@
 package controllers;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ public class UserController extends TimerTask{
 	private ItemDataController itemDataController;
 	private IUserDataRetriever userDataRetriever;
 	private ITradeDataRetriever tradeDataRetriever;
-	private IItemDataRetriever itemDataRetriever;
 	private DebugDocumentLogger logger;
 	
 	/**
@@ -52,15 +52,14 @@ public class UserController extends TimerTask{
 	 * @param userDataRetriever
 	 * @param userChecksEnabled
 	 */
-	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, ITradeDataRetriever tradeDataRetriever, IItemDataRetriever itemDataRetriever, DebugDocumentLogger logger) {
+	public UserController(TradeController tc, IUserDataRetriever userDataRetriever, ITradeDataRetriever tradeDataRetriever, ItemDataController idc, DebugDocumentLogger logger) {
 		this.tradeController = tc;
 		this.userDataRetriever = userDataRetriever;
 		this.tradeDataRetriever = tradeDataRetriever;
-		this.itemDataRetriever = itemDataRetriever;
+		this.itemDataController = idc;
 		this.logger = logger;
 		Timer t = new Timer();
-		t.scheduleAtFixedRate(this, DURATION_PER_CHECK*5L, DURATION_PER_CHECK);
-		
+		t.scheduleAtFixedRate(this, DURATION_PER_CHECK, DURATION_PER_CHECK);
 	}
 	
 	
@@ -73,6 +72,7 @@ public class UserController extends TimerTask{
 		if(usersRequestedForCheck.containsKey(userId)) {
 			return false;
 		} else {
+			System.err.println("adding: "+userId);
 			usersRequestedForCheck.put(userId, System.currentTimeMillis());
 		}
 		return true;
@@ -85,9 +85,11 @@ public class UserController extends TimerTask{
 	
 	private void runRequestedChecks() {
 		for(Map.Entry<String, Long> entry : usersRequestedForCheck.entrySet()) {
-			if(entry.getValue() + MIN_DURATION_FOR_CHECK < System.currentTimeMillis()) {
+			System.err.println("processing: "+entry.getKey());
+			if(entry.getValue() + MIN_DURATION_FOR_CHECK > System.currentTimeMillis()) {
 				continue;
 			}
+			System.err.println("we running: "+entry.getKey());
 			try {
 				if(runRequestedCheckOnUser(entry.getKey())) {
 					usersRequestedForCheck.remove(entry.getKey());
@@ -109,6 +111,7 @@ public class UserController extends TimerTask{
 	 * @throws Exception 
 	 */
 	private boolean runRequestedCheckOnUser(String userId) throws Exception {
+		System.err.println("PROCESSING USER FOR: "+userId);
 		User user = userDataRetriever.getUser(userId);
 		List<Trade> tradesOfUser = tradeDataRetriever.getTradesOfUser(userId);
 		List<Trade> newTradesProcessed = new ArrayList<>();
@@ -120,14 +123,19 @@ public class UserController extends TimerTask{
 			}
 			LocalTime tradeDate = DateStamper.returnStampedDate(trade.getTradeResult().getTimeStampCalculated());
 			LocalTime currentTime = LocalTime.now();
-			if(tradeDate.until(currentTime, ChronoUnit.DAYS) >= TradeRules.DAYS_FOR_TRADE_TO_EXPIRE) {
+			
+			if(Duration.between(currentTime, tradeDate).toDays() >= TradeRules.DAYS_FOR_TRADE_TO_EXPIRE) {
 				continue;
 			}
 			Trade copiedTrade = new Trade(trade);
-			Trade processedTrade = TradeAlgorithms.processTrade(copiedTrade, itemDataController, this);
+			Trade processedTrade = TradeAlgorithms.processTrade(copiedTrade, itemDataController, this, false);
 			if(processedTrade.getTradeResult().getTradeWarningLevel() == trade.getTradeResult().getTradeWarningLevel() && processedTrade.getTradeResult().getTradeCalculated() == trade.getTradeResult().getTradeCalculated()) {
 				continue;
 			}
+			
+			todo..UserController.class somewhere here when from trade, add warning something
+			
+			
 			newTradesProcessed.add(processedTrade);
 			oldWarningLevel += trade.getTradeResult().getTradeWarningLevel();
 			newWarningLevel += processedTrade.getTradeResult().getTradeWarningLevel();
@@ -220,6 +228,9 @@ public class UserController extends TimerTask{
 	
 	private List<String> getListOfUsersFromTrades(List<Trade> trades, String originalTrader){
 		List<String> users = new ArrayList<>();
+		if(trades == null) {
+			return users;
+		}
 		if(trades.size() == 0) {
 			return users;
 		}

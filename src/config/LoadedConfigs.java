@@ -3,7 +3,7 @@ package config;
 public class LoadedConfigs {
 
 	public enum DatabaseType {
-		POSTGRESQL
+		POSTGRESQL, TEMP
 	}
 	
 	public enum ConnectionType {

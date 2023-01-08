@@ -37,6 +37,7 @@ public class DebugDocumentLogger {
 			try {
 				out.println(line);
 				messageStored = true;
+				save();
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 				storedLines.add(line);

@@ -18,7 +18,7 @@ public class TradeController {
 	}
 	
 	public boolean addTrade(Trade trade, ItemDataController itemDataController, UserController userController) {
-		Trade processedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController);
+		Trade processedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController, true);
 		try {
 			if(processedTrade.getTradeId() == null) {
 				processedTrade.setTradeId(DataTypeGenerator.generatedTradeId());

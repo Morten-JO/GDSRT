@@ -60,20 +60,24 @@ public class Main {
 			udr = new TempDatabaseUserDataRetriever();
 			idr = new TempDatabaseItemDataRetriever();
 		}
-		if(dbc == null) {
+		if(dbc == null && tdr == null && udr == null && idr == null) {
 			System.err.println("Failed to etablish database connection, shutting off.");
 			System.exit(0);
 			return;
 		}
 		TradeController tc = new TradeController(tdr);
-		UserController uc = new UserController(tc, udr, tdr, idr, logger);
 		ItemDataController ic = new ItemDataController(idr);
+		UserController uc = new UserController(tc, udr, tdr, ic, logger);
+		
 		//Floods prices into db
+		System.out.println("Yehoeho");
 		if(LoadedConfigs.FLOOD_PRICES) {
-			Map<String, Float> data = FileUtil.readItemFloodCSVFile(LoadedConfigs.FLOOD_PRICES_PATH);
+			System.out.println("loading...");
+			Map<String, Float> data = FileUtil.readItemFloodCSVFile("res/"+LoadedConfigs.FLOOD_PRICES_PATH);
 			if(data != null) {
 				for(Map.Entry<String, Float> entry : data.entrySet()) {
 					try {
+						System.out.println("Adding item: ");
 						ic.addItem(entry.getKey(), entry.getValue(), new Percentage(100));
 					} catch (Exception e) {
 						e.printStackTrace();

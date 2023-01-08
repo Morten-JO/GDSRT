@@ -32,8 +32,8 @@ public class FileUtil {
             LoadedConfigs.STRICTNESS_LEVEL = Integer.valueOf(prop.getProperty("STRICTNESS_LEVEL"));
             LoadedConfigs.CONNECTION_TYPE = LoadedConfigs.ConnectionType.valueOf(prop.getProperty("CONNECTION_TYPE").toUpperCase());
             LoadedConfigs.ENCRYPTION = Boolean.valueOf(prop.getProperty("ENCRYPTION"));
-            LoadedConfigs.FLOOD_PRICES = Boolean.valueOf(prop.getProperty("FLOOD_PRICES"));
-            LoadedConfigs.FLOOD_PRICES_PATH = prop.getProperty("FLOOD_PRICES_PATH");
+            LoadedConfigs.FLOOD_PRICES = Boolean.valueOf(prop.getProperty("FLOOD_ITEMS"));
+            LoadedConfigs.FLOOD_PRICES_PATH = prop.getProperty("FLOOD_ITEMS_PATH");
             LoadedConfigs.INCOMING_SERVER_PORT = Integer.valueOf(prop.getProperty("SERVER_PORT"));
             propsInput.close();
             return true;

@@ -32,13 +32,12 @@ public class TradeGraphUtil {
 				str += ",";
 			}
 		}
-		str += "}}";
+		str += "}}"+System.lineSeparator()+"}";
 		return str;
 	}
 	
 	public static boolean writeUserGraphFile(UserTradeGraph graph, int warningLevelThreshold) throws IOException {
 		String toWrite = tradeGraphToString(graph, warningLevelThreshold);
-
 
 		PrintWriter out;
 		FileWriter writer;
