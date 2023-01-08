@@ -13,6 +13,8 @@ public class PriceFlooder {
 		for(String key : prices.keySet()) {
 			Float value = prices.get(key);
 			ItemData itemData = null;
+			if(key == null || value == null)
+				return false;
 			try {
 				itemData = idr.getItem(key);
 			} catch (Exception e) {

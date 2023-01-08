@@ -1,6 +1,7 @@
 package algorithms;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
@@ -42,6 +43,15 @@ public class TestPriceFlooder {
 		assertTrue(dr.itemExists("itemFive"));
 		assertTrue(dr.itemExists("itemSix"));
 		assertTrue(dr.itemExists("itemSeven"));
+	}
+	
+	@Test
+	void testPriceFloodingError() throws Exception {
+		Map<String, Float> map = new HashMap<>();
+		map.put(null, null);
+
+		PriceFlooder.importPrices(map, dr);
+		assertFalse(dr.itemExists(null));
 	}
 	
 }

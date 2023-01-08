@@ -1,5 +1,7 @@
 package data;
 
+import util.ValueUtil;
+
 public class PricePoint {
 
 	private final static float TRADE_INCREMENT_PERCENTAGER = 0.005f;
@@ -33,13 +35,23 @@ public class PricePoint {
 	}
 	
 	public boolean calculatePricesBasedOnValue(float value) {
+		//Adjust median
+		float multiplier = 20f;
+		//Handle outliers
+		float diff = Math.abs(value - medianPrice);
+		if(diff > medianPrice) {
+			multiplier = 100f * (diff / medianPrice);
+		}
+		
+		float tradeIncrementPercentage = 1f / multiplier;
+		
 		if(minimumPrice > value) {
 			minimumPrice = value;
 		} else if(maximumPrice < value) {
 			maximumPrice = value;
 		} else {
-			float minDiff = (value - minimumPrice) * TRADE_INCREMENT_PERCENTAGER;
-			float maxDiff = (maximumPrice - value) * TRADE_INCREMENT_PERCENTAGER;
+			float minDiff = (value - minimumPrice) * (tradeIncrementPercentage/2.0f);
+			float maxDiff = (maximumPrice - value) * (tradeIncrementPercentage/2.0f);
 			minimumPrice += minDiff;
 			maximumPrice -= maxDiff;
 			if(minimumPrice > medianPrice) {
@@ -48,6 +60,16 @@ public class PricePoint {
 			if(maximumPrice < medianPrice) {
 				maximumPrice = medianPrice;
 			}
+		}
+		if(ValueUtil.isAroundEqual(value, medianPrice, 0.3f)) {
+			return true;
+		}
+		
+		
+		if(medianPrice > value) {
+			medianPrice -= Math.max((medianPrice - value) / multiplier, 0.2f);
+		} else if(medianPrice < value) {
+			medianPrice += Math.max((value - medianPrice) / multiplier, 0.2f);
 		}
 		return true;
 	}

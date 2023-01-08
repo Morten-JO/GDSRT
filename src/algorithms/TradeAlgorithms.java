@@ -25,7 +25,6 @@ public class TradeAlgorithms {
 		int itemsNotRegistered = 0;
 		
 		
-		
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
 		float itemsOneAverageCertainty = 0f;
 		int itemsOneCount = 0;
@@ -79,11 +78,11 @@ public class TradeAlgorithms {
 		}
 		int pricePerItemOne = 0;
 		if(trade.getItemsOne().size() > 0) {
-			pricePerItemOne = (int) (valueOne.getMedianPrice() / (trade.getItemsOne().size()));
+			pricePerItemOne = (int) (valueOne.getMedianPrice() / (itemsOneCount));
 		}
 		int pricePerItemTwo = 0;
 		if(trade.getItemsTwo().size() > 0) {
-			pricePerItemTwo = (int) (valueTwo.getMedianPrice() / (trade.getItemsTwo().size()));
+			pricePerItemTwo = (int) (valueTwo.getMedianPrice() / (itemsTwoCount));
 		}
 		int averagePricePerItem;
 		if(pricePerItemOne != 0 && pricePerItemTwo != 0) {
@@ -172,21 +171,22 @@ public class TradeAlgorithms {
 				float valueWithoutThis;
 				ItemData data = null;
 				if(valuesExtractedTwo.containsKey(item.getItemId())) {
-					valueWithoutThis = valueTwo.getMedianPrice() - valuesExtractedTwo.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					valueWithoutThis = valueTwo.getMedianPrice() - valuesExtractedTwo.get(item.getItemId()).getEstimatedPrice().getMedianPrice() * item.getQuantity();
 					newValue = valuesExtractedTwo.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
 					data = valuesExtractedTwo.get(item.getItemId());
 				} else {
-					valueWithoutThis = valueTwo.getMedianPrice() - 100f;
+					valueWithoutThis = valueTwo.getMedianPrice() - 100f * item.getQuantity();
 					newValue = 100f;
 				}
 				
-				float valueDiff = value - valueWithoutThis;
-				if(valueDiff < 0f) {
-					newValue -= Math.max(valueDiff, newValue/2.0f);
-				} else {
-					newValue += Math.max(valueDiff, newValue/2.0f);
+				float valueDiff = value - valueTwo.getMedianPrice();
+				if(!ValueUtil.isAroundEqual(valueDiff, 0f, 0.1f)) {
+					if(valueDiff < 0f) {
+						newValue = Math.max(newValue + valueDiff / item.getQuantity(), newValue/2.0f);
+					} else {
+						newValue = Math.min(newValue + valueDiff / item.getQuantity(), newValue + newValue/2.0f);
+					}
 				}
-				
 				try {
 					Percentage percentage;
 					if(data != null) {
@@ -222,19 +222,20 @@ public class TradeAlgorithms {
 				float valueWithoutThis;
 				ItemData data = null;
 				if(valuesExtractedOne.containsKey(item.getItemId())) {
-					valueWithoutThis = valueOne.getMedianPrice() - valuesExtractedOne.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
+					valueWithoutThis = valueOne.getMedianPrice() - valuesExtractedOne.get(item.getItemId()).getEstimatedPrice().getMedianPrice() * item.getQuantity();
 					newValue = valuesExtractedOne.get(item.getItemId()).getEstimatedPrice().getMedianPrice();
 					data = valuesExtractedOne.get(item.getItemId());
 				} else {
-					valueWithoutThis = valueOne.getMedianPrice() - 100f;
+					valueWithoutThis = valueOne.getMedianPrice() - 100f * item.getQuantity();
 					newValue = 100f;
 				}
-				
-				float valueDiff = value - valueWithoutThis;
-				if(valueDiff < 0f) {
-					newValue -= Math.max(valueDiff, newValue/2.0f);
-				} else {
-					newValue += Math.max(valueDiff, newValue/2.0f);
+				float valueDiff = value - valueOne.getMedianPrice();
+				if(!ValueUtil.isAroundEqual(valueDiff, 0f, 0.1f)) {
+					if(valueDiff < 0f) {
+						newValue = Math.max(newValue + valueDiff / item.getQuantity(), newValue/2.0f);
+					} else {
+						newValue = Math.min(newValue + valueDiff / item.getQuantity(), newValue + newValue/2.0f) / item.getQuantity();
+					}
 				}
 				
 				try {

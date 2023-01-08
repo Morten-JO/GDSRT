@@ -5,7 +5,7 @@ import dto.Percentage;
 public class ItemData {
 
 	private String itemId;
-	private PricePoint estimatedPrice;
+	private PricePoint estimatedPrice = new PricePoint(0, 0, 0);
 	private Integer[] recentTradeValues;
 	private int totalTrades;
 	private Percentage itemValueCertaintyPercentage;
