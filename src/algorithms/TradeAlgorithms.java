@@ -24,6 +24,10 @@ public class TradeAlgorithms {
 		PricePoint valueTwo = new PricePoint(0,0,0);
 		int itemsNotRegistered = 0;
 		
+		//Perform checks and create new user if not found
+		userController.createNewUser(trade.getTraderOne());
+		userController.createNewUser(trade.getTraderTwo());
+		
 		
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
 		float itemsOneAverageCertainty = 0f;

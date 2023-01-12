@@ -48,7 +48,7 @@ public class Main {
 			try {
 				dbc = new DatabaseController(LoadedConfigs.DB_HOST, LoadedConfigs.DB_TYPE.toString(), LoadedConfigs.DB_NAME, LoadedConfigs.DB_USER, LoadedConfigs.DB_PASS, LoadedConfigs.DB_PORT, logger);
 				udr = new DatabaseUserDataRetriever(dbc);
-				tdr = new DatabaseTradeDataRetriever(dbc, (DatabaseUserDataRetriever)udr);
+				tdr = new DatabaseTradeDataRetriever(dbc);
 				idr = new DatabaseItemDataRetriever(dbc);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();

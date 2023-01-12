@@ -19,12 +19,9 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 	
 	private DatabaseController dbController;
 	
-	private DatabaseUserDataRetriever userRetriever;
-	
-	public DatabaseTradeDataRetriever(DatabaseController dbController, DatabaseUserDataRetriever userRetriever) {
+	public DatabaseTradeDataRetriever(DatabaseController dbController) {
 		this.dbController = dbController;
 		this.tableName = "trades";
-		this.userRetriever = userRetriever;
 	}
 	
 	@Override
@@ -82,12 +79,6 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 			List<TradeItem> itemsTwo, TradeResult tradeResult) throws Exception {
 		if(tradeExists(tradeId)) {
 			return false;
-		}
-		if(!userRetriever.userExists(traderOne)) {
-			userRetriever.addUser(traderOne, 0, "{}");
-		}
-		if(!userRetriever.userExists(traderTwo)) {
-			userRetriever.addUser(traderTwo, 0, "{}");
 		}
 		
 		//" + dbController.getDatabaseName() + "."+

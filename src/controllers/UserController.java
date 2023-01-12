@@ -12,6 +12,7 @@ import java.util.TimerTask;
 
 import algorithms.TradeAlgorithms;
 import data.UserTradeGraph;
+import data.UserTradeGraph.DetailLevel;
 import data_retrievers.IItemDataRetriever;
 import data_retrievers.ITradeDataRetriever;
 import data_retrievers.IUserDataRetriever;
@@ -133,7 +134,7 @@ public class UserController extends TimerTask{
 				continue;
 			}
 			
-			todo..UserController.class somewhere here when from trade, add warning something
+			//TODO..UserController.class somewhere here when from trade, add warning something
 			
 			
 			newTradesProcessed.add(processedTrade);
@@ -153,8 +154,10 @@ public class UserController extends TimerTask{
 		return false;
 	}
 	
-	public UserTradeGraph retrieveGraphForUser(String user, int layers, UserTradeGraph.DetailLevel detailLevel) {
-		UserTradeGraph graph = new UserTradeGraph();
+	public UserTradeGraph retrieveGraphForUser(String user, int layers, int warning, UserTradeGraph.DetailLevel detailLevel) {
+		UserTradeGraph graph = retrieveGraphForUserWithWarning(user, layers, warning, new ArrayList<String>(), null, null);
+		return graph;
+		/*UserTradeGraph graph = new UserTradeGraph();
 		graph.setUserId(user);
 		graph.setLayers(layers);
 		List<Trade> tradesOfUser = tradeController.getTradesOfUser(user, detailLevel);
@@ -181,7 +184,55 @@ public class UserController extends TimerTask{
 		}
 		graph.setTrades(tradesOfUser);
 		graph.setPoints(tradePoints);
+		return graph;*/
+	}
+	
+	private UserTradeGraph retrieveGraphForUserWithWarning(String user, int layers, int warning, List<String> traversed, UserTradeGraph owner, List<Trade> childTradesWithOwner) {
+		if(traversed.contains(user)) {
+			return null;
+		} else {
+			traversed.add(user);
+		}
+		UserTradeGraph graph = new UserTradeGraph();
+		graph.setUserId(user);
+		graph.setLayers(layers);
+		graph.setWarningLevel(warning);
+		graph.setOwner(owner);
+		graph.setTradesWithOwner(childTradesWithOwner);
+		
+		List<Trade> tradesOfUser = tradeController.getTradesOfUser(user, DetailLevel.HIGHWARNING);
+		List<UserTradeGraph> tradePoints = new ArrayList<>();
+		List<String> users = getListOfUsersFromTrades(tradesOfUser, user, warning);
+		System.out.println("Users: "+users);
+		for(String u : users) {
+			System.out.println("Cawk?");
+			User childUser = getUser(u);
+			if(childUser == null) {
+				continue;
+			}
+			System.out.println("Here..");
+			List<Trade> childTrades = new ArrayList<>();
+			for(Trade trade : tradesOfUser) {
+				if(trade.getTradeResult().getTradeWarningLevel() >= warning) {
+					if(trade.getTraderOne().equals(u) || trade.getTraderTwo().equals(u)) {
+						childTrades.add(trade);
+					}
+				}
+			}
+			System.out.println("Yo?");
+			if(layers > 0) {
+				UserTradeGraph childGraph = retrieveGraphForUserWithWarning(u, layers-1, warning, traversed, owner, childTrades);
+				if(childGraph != null) {
+					System.out.println("Questionmark");
+					tradePoints.add(childGraph);
+				}
+			}
+		}
+		graph.setTrades(tradesOfUser);
+		graph.setPoints(tradePoints);
 		return graph;
+
+		
 	}
 	
 	public UserTradeGraph lookAtPointFromUserTradeGraph(UserTradeGraph orig, String userId, UserTradeGraph.DetailLevel detailLevel) {
@@ -248,12 +299,62 @@ public class UserController extends TimerTask{
 		return users;
 	}
 	
+	private List<String> getListOfUsersFromTrades(List<Trade> trades, String originalTrader, int warningLevel){
+		List<String> users = new ArrayList<>();
+		if(trades == null) {
+			return users;
+		}
+		if(trades.size() == 0) {
+			return users;
+		}
+		for(Trade trade: trades) {
+			if(trade.getTradeResult() == null) {
+				continue;
+			} else {
+				if (trade.getTradeResult().getTradeWarningLevel() < warningLevel) {
+					continue;
+				}
+			}
+			String trader;
+			if(trade.getTraderOne().equals(originalTrader)) {
+				trader = trade.getTraderTwo();
+			} else {
+				trader = trade.getTraderOne();
+			}
+			if(!users.contains(trader)) {
+				users.add(trader);
+			}
+		}
+		return users;
+	}
+	
 	public TradeController getTradeController() {
 		return tradeController;
 	}
 	
 	public IUserDataRetriever getUserDataRetriever() {
 		return userDataRetriever;
+	}
+	
+	public boolean userExists(String name) {
+		try {
+			return userDataRetriever.userExists(name);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean createNewUser(String name) {
+		try {
+			if(!userDataRetriever.userExists(name)) {
+				return userDataRetriever.addUser(name, 0, "{}");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+		
 	}
 	
 }

@@ -82,7 +82,7 @@ public class ClientConnection extends Connection {
 				try {
 					int warning = Integer.parseInt(values[2]);
 					int layers = Integer.parseInt(values[3]);
-					TradeGraphUtil.writeUserGraphFile(hostServer.getUserController().retrieveGraphForUser(name, layers, DetailLevel.ALL), warning);
+					TradeGraphUtil.writeUserGraphFile(hostServer.getUserController().retrieveGraphForUser(name, layers, warning, DetailLevel.ALL), warning);
 				} catch (Exception e) {
 					e.printStackTrace();
 					return;
