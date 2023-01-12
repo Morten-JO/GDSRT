@@ -22,25 +22,25 @@ public class TradeGraphUtil {
 		if(indentation != 0) {
 			str += System.lineSeparator();
 		}
-		str += indentationToSpaces(indentation)+"{"+System.lineSeparator()+indentationToSpaces(indentation)+"layer: "+graph.getLayers()+", warning: "+graph.getWarningLevel()+", ";
-		str += graph.getUserId()+": {";
-		str += "trades: {";
+		str += indentationToSpaces(indentation)+"{"+System.lineSeparator()+indentationToSpaces(indentation)+"\"layer\": "+graph.getLayers()+", \"warning\": "+graph.getWarningLevel()+", ";
+		str += "\""+graph.getUserId()+"\": {";
+		str += "\"trades\": [";
 		for(Trade trade : graph.getTrades()) {
 			str += "{";
-			str += "trade: "+trade.getTradeId()+", warning_level: "+trade.getTradeResult().getTradeWarningLevel()+", trade_diff: "+trade.getTradeResult().getTradeMedianValueDifference();
+			str += "\"trade\": \""+trade.getTradeId()+"\", \"warning_level\": "+trade.getTradeResult().getTradeWarningLevel()+", \"trade_diff\": "+trade.getTradeResult().getTradeMedianValueDifference();
 			str += "}";
 			if(trade != graph.getTrades().get(graph.getTrades().size()-1)) {
 				str += ",";
 			}
 		}
-		str += "}, child_graphs: {";
+		str += "], \"child_graphs\": [";
 		for(UserTradeGraph lowerGraph : graph.getPoints()) {
 			str += tradeGraphToString(lowerGraph, warningLevelThreshold, indentation+2);
 			if(lowerGraph != graph.getPoints().get(graph.getPoints().size()-1)) {
 				str += ",";
 			}
 		}
-		str += "}}"+System.lineSeparator()+indentationToSpaces(indentation)+"}";
+		str += "]}"+System.lineSeparator()+indentationToSpaces(indentation)+"}";
 		return str;
 	}
 	
