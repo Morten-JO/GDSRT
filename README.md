@@ -8,20 +8,20 @@ This could for example be when a inidividual is found to be cheating, the trades
 ### Config file  
 First of all, the service has a config.properties file that needs to be defined with various values:  
 **All of the properties need to be defined, and the options for each option is split by |**  
-DB_TYPE=TEMP|POSTGRESQL - Type of database. Temp means a transient data source, will be cleared upon end of run.  
-DB_HOST=localhost - Db ip/domain, ignored if transient  
-DB_USERNAME=username - ignored if transient  
-DB_PASSWORD=password - ignored if transient  
-STRICTNESS_LEVEL=1  
-CONNECTION_TYPE=SOCKET - Connection type, only available type is SOCKET  
-DB_NAME=gdsrt  
-DB_PORT=5432  
-SERVER_PORT=1234 - Port of the server  
-ENCRYPTION=false - Whether or not to enable encryption  
-PRIVATE_KEY_PATH=key - Location on system to where the private key is located (if enabled)  
+- DB_TYPE=TEMP|POSTGRESQL - Type of database. Temp means a transient data source, will be cleared upon end of run.  
+- DB_HOST=localhost - Db ip/domain, ignored if transient  
+- DB_USERNAME=username - ignored if transient  
+- DB_PASSWORD=password - ignored if transient  
+- STRICTNESS_LEVEL=1  
+- CONNECTION_TYPE=SOCKET - Connection type, only available type is SOCKET  
+- DB_NAME=gdsrt  
+- DB_PORT=5432  
+- SERVER_PORT=1234 - Port of the server  
+- ENCRYPTION=false - Whether or not to enable encryption  
+- PRIVATE_KEY_PATH=key - Location on system to where the private key is located (if enabled)  
 **It should be noted that using encryption is not recommended, as the data it processes is not very vulnerable, and the service is meant to be containerized and running locally on the same network as the connecting service**  
-FLOOD_ITEMS=true|false - Whether or not to inject prices of items into the service.  
-FLOOD_ITEMS_PATH=items.csv - Location on system to where the price of items is located (if enabled)  
+- FLOOD_ITEMS=true|false - Whether or not to inject prices of items into the service.  
+- FLOOD_ITEMS_PATH=items.csv - Location on system to where the price of items is located (if enabled)  
 **File is .csv, with data being given as: itemname,price**  
 
 ### Running  
