@@ -4,8 +4,9 @@ This toolkit is a service meant to assist with handling security incidents in on
 Currently, this is targetted against games with trading services, as these usually have elements that needs to be tracked and handled when an exploit happens.   
 This could for example be when a inidividual is found to be cheating, the trades of that user can be tracked, and action can be taken against then.  
 
-## How this is suppoused to work
+## How this works
 When an incident, such as somebody who has illegally been selling currency in a game gets discovered. One can when performing bans, etc use this to find out exactly which trades happened, and which trades were "suspicious". This gives the admin a very easy way to see which individuals this user traded items to. Then they can use that to perform mitigation actions for that specific incident. Furthermore, it also allows chain-scanning, meaning it can produce a "chain" of suspicious trades if one where to for example be muling something to prevent discovery.
+**It should be noted that this is not a tool for preventing hacking/exploiting in an application, like services such as EAC does. This service is only for providing a toolkit that individuals who handle security response incidents can use to quickly perform mitigation actions.**
 
 ## Deployment  
 ### Config file  
