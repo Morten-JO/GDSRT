@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 
 import algorithms.TradeAlgorithms;
 import data.UserTradeGraph;
@@ -23,7 +24,7 @@ import util.DebugDocumentLogger;
 
 public class UserController extends TimerTask{
 
-	private Map<String, Long> usersRequestedForCheck = new HashMap<>();
+	private Map<String, Long> usersRequestedForCheck = new ConcurrentHashMap<>();
 	private static Long MIN_DURATION_FOR_CHECK = 5000L;
 	private static Long DURATION_PER_CHECK = 60000L;
 	private TradeController tradeController;

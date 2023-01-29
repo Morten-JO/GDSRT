@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -41,6 +43,8 @@ public class Server {
 	private ItemDataController idc;
 
 	private PrivateKey decryptionKey;
+	
+	private List<Client> clients = new ArrayList<>();
 
 	public Server(TradeController tc, UserController uc, ItemDataController idc) throws IOException {
 		incomingServerPort = LoadedConfigs.INCOMING_SERVER_PORT;
@@ -73,6 +77,7 @@ public class Server {
 					PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
 					Client client = new Client(this, clientSocket, writer, reader);
 					client.getConnection().startConnection();
+					clients.add(client);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
