@@ -28,9 +28,9 @@ public class Connection {
 		this.socket = socket;
 		this.reader = reader;
 		this.writer = writer;
-		messagesToSend = new ArrayList<String>();
+		messagesToSend = new ArrayList<>();
 	}
-	
+
 	public void startConnection() {
 		runReader();
 		runWriter();

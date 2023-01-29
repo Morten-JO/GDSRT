@@ -5,25 +5,25 @@ import util.ValueUtil;
 public class PricePoint {
 
 	private final static float TRADE_INCREMENT_PERCENTAGER = 0.005f;
-	
+
 	private float minimumPrice = 0f;
 	private float maximumPrice = 0f;
 	private float medianPrice = 0f;
-	
+
 	public void incrementAll(int quantity, PricePoint point) {
 		incrementMaximumPrice(quantity * point.getMaximumPrice());
 		incrementMedianPrice(quantity * point.getMedianPrice());
 		incrementMinimumPrice(quantity * point.getMinimumPrice());
 	}
-	
+
 	public PricePoint(float min, float med, float max) {
 		this.minimumPrice = min;
 		this.medianPrice = med;
 		this.maximumPrice = max;
 	}
-	
+
 	/**
-	 * Returns yes if another PricePoint at any(Minimum,Median or Maximum) is in any of the points. 
+	 * Returns yes if another PricePoint at any(Minimum,Median or Maximum) is in any of the points.
 	 * @param point
 	 * @return
 	 */
@@ -33,7 +33,7 @@ public class PricePoint {
 		}
 		return false;
 	}
-	
+
 	public boolean calculatePricesBasedOnValue(float value) {
 		//Adjust median
 		float multiplier = 20f;
@@ -42,9 +42,9 @@ public class PricePoint {
 		if(diff > medianPrice) {
 			multiplier = 100f * (diff / medianPrice);
 		}
-		
+
 		float tradeIncrementPercentage = 1f / multiplier;
-		
+
 		if(minimumPrice > value) {
 			minimumPrice = value;
 		} else if(maximumPrice < value) {
@@ -64,8 +64,8 @@ public class PricePoint {
 		if(ValueUtil.isAroundEqual(value, medianPrice, 0.3f)) {
 			return true;
 		}
-		
-		
+
+
 		if(medianPrice > value) {
 			medianPrice -= Math.max((medianPrice - value) / multiplier, 0.2f);
 		} else if(medianPrice < value) {
@@ -73,7 +73,7 @@ public class PricePoint {
 		}
 		return true;
 	}
-	
+
 	public float getMinimumPrice() {
 		return minimumPrice;
 	}

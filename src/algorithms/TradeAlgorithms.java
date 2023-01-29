@@ -23,12 +23,12 @@ public class TradeAlgorithms {
 		PricePoint valueOne = new PricePoint(0,0,0);
 		PricePoint valueTwo = new PricePoint(0,0,0);
 		int itemsNotRegistered = 0;
-		
+
 		//Perform checks and create new user if not found
 		userController.createNewUser(trade.getTraderOne());
 		userController.createNewUser(trade.getTraderTwo());
-		
-		
+
+
 		List<TradeItem> tradeOneNotRegistered = new ArrayList<>();
 		float itemsOneAverageCertainty = 0f;
 		int itemsOneCount = 0;
@@ -50,9 +50,9 @@ public class TradeAlgorithms {
 			}
 		}
 		itemsOneAverageCertainty /= trade.getItemsOne().size();
-		
-		
-		
+
+
+
 		List<TradeItem> tradeTwoNotRegistered = new ArrayList<>();
 		float itemsTwoAverageCertainty = 0f;
 		int itemsTwoCount = 0;
@@ -74,7 +74,7 @@ public class TradeAlgorithms {
 			}
 		}
 		itemsTwoAverageCertainty /= trade.getItemsTwo().size();
-		
+
 		boolean tradeNulled = false;
 		int totalItems = trade.getItemsOne().size() + trade.getItemsTwo().size();
 		if(totalItems / 3.0f < itemsNotRegistered) {
@@ -137,13 +137,10 @@ public class TradeAlgorithms {
 						values.add(value.getItemValueCertaintyPercentage().getPercentage());
 					}
 				}
-				System.out.println("Do we get in here");
 				int averageConfidenceLevelPercentage = 0;
 				if(values.size() > 0) {
-					System.out.println("How about this");
 					averageConfidenceLevelPercentage = values.stream().mapToInt(a -> a).sum() / values.size();
 				}
-				System.out.println("and this?");
 				if(averageConfidenceLevelPercentage >= 50) {
 					int valueDif = (int)Math.abs(valueOne.getMedianPrice() - valueTwo.getMedianPrice());
 					float valueMultiplierDifference = 10;
@@ -152,8 +149,9 @@ public class TradeAlgorithms {
 						valueMultiplierDifference = 10f * ((float)valueDif / (float)minValueTrade);
 					}
 					int warningLevel = (int) Math.min(10, Math.max(0, (averageConfidenceLevelPercentage / 100f) * valueMultiplierDifference));
-					System.out.println("Yep: "+warningLevel+" and "+valueDif+" and "+minValueTrade);
 					result.setTradeWarningLevel(warningLevel);
+				} else {
+					result.setTradeCalculated(TradeCalculated.COMPLETED);
 				}
 			}
 		}
@@ -191,7 +189,7 @@ public class TradeAlgorithms {
 					valueWithoutThis = valueTwo.getMedianPrice() - 100f * item.getQuantity();
 					newValue = 100f;
 				}
-				
+
 				float valueDiff = value - valueTwo.getMedianPrice();
 				if(!ValueUtil.isAroundEqual(valueDiff, 0f, 0.1f)) {
 					if(valueDiff < 0f) {
@@ -255,7 +253,7 @@ public class TradeAlgorithms {
 						newValue = Math.min(newValue + valueDiff / item.getQuantity(), newValue + newValue/2.0f) / item.getQuantity();
 					}
 				}
-				
+
 				try {
 					Percentage percentage;
 					if(data != null) {
@@ -287,18 +285,18 @@ public class TradeAlgorithms {
 				}
 			}
 		}
-		
+
 		System.out.println("Result warning level is: "+result.getTradeWarningLevel());
 		if(result.getTradeWarningLevel() > 5 && updateData) {
 			System.out.println("Triggering check for: "+trade.getTraderOne()+" and "+trade.getTraderTwo());
 			userController.requestUserCheck(trade.getTraderOne());
 			userController.requestUserCheck(trade.getTraderTwo());
-			
+
 		}
-		
+
 		trade.setTradeResult(result);
-		
+
 		return trade;
 	}
-	
+
 }

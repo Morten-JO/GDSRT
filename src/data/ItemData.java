@@ -9,7 +9,7 @@ public class ItemData {
 	private Integer[] recentTradeValues;
 	private int totalTrades;
 	private Percentage itemValueCertaintyPercentage;
-	
+
 	public String getItemId() {
 		return itemId;
 	}
@@ -43,6 +43,6 @@ public class ItemData {
 	public void setEstimatedPrice(PricePoint estimatedPrice) {
 		this.estimatedPrice = estimatedPrice;
 	}
-	
-	
+
+
 }

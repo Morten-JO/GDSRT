@@ -26,6 +26,9 @@ public class TradeGraphUtil {
 		str += "\""+graph.getUserId()+"\": {";
 		str += "\"trades\": [";
 		for(Trade trade : graph.getTrades()) {
+			if(trade.getTradeResult().getTradeWarningLevel() < warningLevelThreshold) {
+				continue;
+			}
 			str += "{";
 			str += "\"trade\": \""+trade.getTradeId()+"\", \"warning_level\": "+trade.getTradeResult().getTradeWarningLevel()+", \"trade_diff\": "+trade.getTradeResult().getTradeMedianValueDifference();
 			str += "}";
@@ -43,16 +46,16 @@ public class TradeGraphUtil {
 		str += "]}"+System.lineSeparator()+indentationToSpaces(indentation)+"}";
 		return str;
 	}
-	
+
 	private static String indentationToSpaces(int indentation) {
 		String space = " ";
 		return IntStream.range(0, indentation).mapToObj(i -> space).collect(Collectors.joining(""));
 	}
-	
+
 	public static boolean writeDataReportOnGraph(UserTradeGraph graph, int warningLevelThreshold) throws IOException {
 		return true;
 	}
-	
+
 	public static boolean writeUserGraphFile(UserTradeGraph graph, int warningLevelThreshold) throws IOException {
 		String toWrite = tradeGraphToString(graph, warningLevelThreshold, 0);
 
@@ -60,7 +63,7 @@ public class TradeGraphUtil {
 		FileWriter writer;
 		BufferedWriter bufferedWriter;
 		ArrayList<String> storedLines = new ArrayList<>();
-		File file = new File("UserTradeGraph_"+System.currentTimeMillis()+".json");
+		File file = new File("UserTradeGraph_"+graph.getUserId()+"_"+System.currentTimeMillis()+".json");
 		if(!file.exists()) {
 			file.createNewFile();
 		}
@@ -90,5 +93,5 @@ public class TradeGraphUtil {
 		out = null;
 		return true;
 	}
-	
+
 }

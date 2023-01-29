@@ -10,14 +10,14 @@ import dto.TradeResult;
 
 public class TestTradeDataRetriever implements ITradeDataRetriever {
 
-	
+
 	public List<Trade> toReturn = new ArrayList<>();
-	
+
 	@Override
 	public List<Trade> getAllTrades(){
 		return toReturn;
 	}
-	
+
 	@Override
 	public List<Trade> getTradesOfUser(String trader) {
 		List<Trade> isUser = new ArrayList<>();
@@ -28,7 +28,7 @@ public class TestTradeDataRetriever implements ITradeDataRetriever {
 		}
 		return isUser;
 	}
-	
+
 	@Override
 	public List<Trade> getTradesOfUserWithUser(String trader, String traderTwo) {
 		List<Trade> isUser = new ArrayList<>();
@@ -64,5 +64,5 @@ public class TestTradeDataRetriever implements ITradeDataRetriever {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 }

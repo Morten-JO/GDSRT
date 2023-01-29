@@ -18,7 +18,7 @@ public class DatabaseController {
 	Connection connect = null;
 	String databaseName;
 	DebugDocumentLogger documentLogger;
-	
+
 	private String databaseUrl;
 	private String databaseUsername;
 	private String databasePassword;
@@ -63,10 +63,10 @@ public class DatabaseController {
 			}
 		});
 		keepAliveThread.start();
-		
+
 		checkDatabaseDetails();
 	}
-	
+
 	private boolean checkDatabaseDetails() {
 		ResultSet resultSet;
 		List<String> tableNames = new ArrayList<>();
@@ -129,10 +129,10 @@ public class DatabaseController {
 
 	/**
 	 * USERS: USERID(Primary key) String, EyeLevel int, , data string
-	 * TRADES: TRADEID(Primary key), TraderOne(Secondary key), TraderTwo(secondary Key), ItemsOne string, ItemsTwo string, tradecalculated boolean, tradeMedianValueDifference int, tradeMinimumValueDifference int, tradeMaximumValueDifference int, tradeWarningLevel int, timeStampCalculated string, checksum String, data string; 
+	 * TRADES: TRADEID(Primary key), TraderOne(Secondary key), TraderTwo(secondary Key), ItemsOne string, ItemsTwo string, tradecalculated boolean, tradeMedianValueDifference int, tradeMinimumValueDifference int, tradeMaximumValueDifference int, tradeWarningLevel int, timeStampCalculated string, checksum String, data string;
 	 * Items: ItemId, Minimum, Medium, Maximum,  , data string
 	 */
-	
+
 	private boolean createUsersTable() throws SQLException {
 		PreparedStatement statement = prepareSafeStatement(
 				"create table users(USER_ID VARCHAR(30), EYE_LEVEL int not null default 1, ADD_DATA VARCHAR, PRIMARY KEY (USER_ID))");
@@ -154,12 +154,12 @@ public class DatabaseController {
 	public Connection getConnection() {
 		return connect;
 	}
-	
+
 	public String getDatabaseName() {
 		return databaseName;
 	}
-	
-	
+
+
 	public PreparedStatement prepareSafeStatement(String val) throws SQLException {
 		timeOnLastQuery = System.currentTimeMillis();
 		try {

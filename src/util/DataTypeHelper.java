@@ -22,9 +22,9 @@ public class DataTypeHelper {
 		} catch (SQLException e) {
 			return null;
 		}
-		
+
 	}
-	
+
 	public static Array intArrayToSqlArray(Integer[] array, Connection connection) {
 		Array conv;
 		try {
@@ -34,7 +34,7 @@ public class DataTypeHelper {
 		}
 		return conv;
 	}
-	
+
 	public static List<TradeItem> stringToTradeItemList(String string){
 		String[] vals;
 		try {
@@ -50,7 +50,7 @@ public class DataTypeHelper {
 			return null;
 		}
 	}
-	
+
 	public static String tradeItemListToString(List<TradeItem> list, Connection connection) {
 		String vals = "";
 		for(int i = 0; i < list.size(); i++) {
@@ -62,7 +62,7 @@ public class DataTypeHelper {
 		}
 		return vals;
 	}
-	
+
 	public static Trade tradeStringToTrade(String trade) {
 		Map<String, String> map = Arrays.stream(trade.replace("{", "").replace("}", "").split(","))
 				.map(entry -> entry.split("="))
@@ -74,7 +74,7 @@ public class DataTypeHelper {
 		convertedTrade.setItemsTwo(mapToTradeItems(map, "traderTwo"));
 		return convertedTrade;
 	}
-	
+
 	private static List<TradeItem> mapToTradeItems(Map<String, String> map, String prefix){
 		List<TradeItem> items = new ArrayList<>();
 		int iterator = 1;
@@ -90,6 +90,6 @@ public class DataTypeHelper {
 		}
 		return items;
 	}
-	
-	
+
+
 }

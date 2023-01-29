@@ -1,6 +1,5 @@
 package algorithms;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,17 +13,17 @@ import data_retrievers.IItemDataRetriever;
 import extensions.TestItemDataRetriever;
 
 public class TestPriceFlooder {
-	
+
 	private IItemDataRetriever dr;
-	
+
 	@BeforeEach
 	void setup() {
 		dr = new TestItemDataRetriever();
 	}
-	
+
 	@Test
 	void testPriceFlooding() throws Exception {
-		
+
 		Map<String, Float> map = new HashMap<>();
 		map.put("itemOne", 1.0f);
 		map.put("itemTwo", 2.0f);
@@ -33,7 +32,7 @@ public class TestPriceFlooder {
 		map.put("itemFive", 5.0f);
 		map.put("itemSix", 6.0f);
 		map.put("itemSeven", 7.0f);
-		
+
 
 		PriceFlooder.importPrices(map, dr);
 		assertTrue(dr.itemExists("itemOne"));
@@ -44,7 +43,7 @@ public class TestPriceFlooder {
 		assertTrue(dr.itemExists("itemSix"));
 		assertTrue(dr.itemExists("itemSeven"));
 	}
-	
+
 	@Test
 	void testPriceFloodingError() throws Exception {
 		Map<String, Float> map = new HashMap<>();
@@ -53,5 +52,5 @@ public class TestPriceFlooder {
 		PriceFlooder.importPrices(map, dr);
 		assertFalse(dr.itemExists(null));
 	}
-	
+
 }

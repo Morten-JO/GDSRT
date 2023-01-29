@@ -29,7 +29,7 @@ public class DebugDocumentLogger {
 		writer = new FileWriter(file, true);
 		bufferedWriter = new BufferedWriter(writer);
 		out = new PrintWriter(bufferedWriter);
-		storedLines = new ArrayList<String>();
+		storedLines = new ArrayList<>();
 	}
 
 	public void writeLineToFile(String line) {

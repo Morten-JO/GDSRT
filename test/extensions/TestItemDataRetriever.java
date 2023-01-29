@@ -11,7 +11,7 @@ import dto.Percentage;
 public class TestItemDataRetriever implements IItemDataRetriever{
 
 	private List<ItemData> itemDatas = new ArrayList<>();
-	
+
 	@Override
 	public ItemData getItem(String itemId) throws Exception {
 		for(ItemData data : itemDatas) {
@@ -70,7 +70,7 @@ public class TestItemDataRetriever implements IItemDataRetriever{
 	public boolean addItem(String itemId, PricePoint pricePoint, Integer[] recentTrades, int totalTrades,
 			int certaintyPercentage) throws Exception {
 		ItemData data = new ItemData();
-		data.setItemId(itemId);;
+		data.setItemId(itemId);
 		data.setItemValueCertaintyPercentage(new Percentage(certaintyPercentage));
 		data.setTotalTrades(totalTrades);
 		data.setRecentTradeValues(recentTrades);

@@ -10,14 +10,14 @@ import user.User;
 public class DatabaseUserDataRetriever implements IUserDataRetriever{
 
 	private final String tableName;
-	
+
 	private DatabaseController dbController;
-	
+
 	public DatabaseUserDataRetriever(DatabaseController dbController) {
 		this.dbController = dbController;
 		tableName = "users";
 	}
-	
+
 	@Override
 	public User getUser(String userId) throws SQLException {
 		PreparedStatement statement = dbController.prepareSafeStatement("select * from "+tableName+" where USER_ID = ?");

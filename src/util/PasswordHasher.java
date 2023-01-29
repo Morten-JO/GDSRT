@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class PasswordHasher {
-	
+
 	public static String getSHA512SecurePassword(String passwordToHash, String salt){
 		String generatedPassword = null;
 		try {
@@ -15,8 +15,8 @@ public class PasswordHasher {
 			md.update(salt.getBytes(StandardCharsets.UTF_8));
 			byte[] bytes = md.digest(passwordToHash.getBytes(StandardCharsets.UTF_8));
 			StringBuilder sb = new StringBuilder();
-			for(int i = 0; i < bytes.length; i++){
-				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+			for (byte element : bytes) {
+				sb.append(Integer.toString((element & 0xff) + 0x100, 16).substring(1));
 			}
 			generatedPassword = sb.toString();
 		} catch (NoSuchAlgorithmException e) {
@@ -29,11 +29,11 @@ public class PasswordHasher {
 		}
 		return generatedPassword;
 	}
-	
+
 	public static String byte2string(byte[] bytes){
 		BigInteger number = new BigInteger(1, bytes);
 		String stringText = number.toString(16);
-			
+
 		while(stringText.length() < 32) {
 			stringText = "0" + stringText;
 		}
@@ -42,7 +42,7 @@ public class PasswordHasher {
 		}
 		return stringText;
 	}
-	
+
 	public static String getRandomSalt(){
 		SecureRandom random = new SecureRandom();
 		byte[] salt = new byte[16];

@@ -99,7 +99,7 @@ public class ClientConnection extends Connection {
 	public void setConnectionOwner(Client client) {
 		connectionOwner = client;
 	}
-	
-	
+
+
 
 }

@@ -7,7 +7,7 @@ public class TradeResult {
 	public enum TradeCalculated {
 		COMPLETED, ERROR, NOT_COMPLETED, INCONCLUSIVE, FINALIZED
 	}
-	
+
 	private TradeCalculated tradeCalculated = TradeCalculated.NOT_COMPLETED;
 	private int tradeMedianValueDifference;
 	private int tradeMinimumValueDifference;
@@ -15,11 +15,11 @@ public class TradeResult {
 	private int tradeWarningLevel;
 	private String timeStampCalculated;
 	private String checksum;
-	
+
 	public TradeResult() {
-		
+
 	}
-	
+
 	public TradeResult(TradeCalculated res, int median, int minimum, int maximum, int level, String checksum) {
 		this.tradeCalculated = res;
 		this.tradeMedianValueDifference = median;
@@ -29,7 +29,7 @@ public class TradeResult {
 		this.timeStampCalculated = DateStamper.getStampedDate();
 		this.checksum = checksum;
 	}
-	
+
 	public TradeResult(TradeCalculated res, float median, float minimum, float maximum, int level, String checksum) {
 		this.tradeCalculated = res;
 		this.tradeMedianValueDifference = (int)median;
@@ -39,7 +39,7 @@ public class TradeResult {
 		this.timeStampCalculated = DateStamper.getStampedDate();
 		this.checksum = checksum;
 	}
-	
+
 	public TradeCalculated getTradeCalculated() {
 		return tradeCalculated;
 	}
@@ -82,10 +82,10 @@ public class TradeResult {
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 }

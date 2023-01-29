@@ -10,7 +10,7 @@ import util.AdditionalDataConverter;
 public class TestUserDataRetriever implements IUserDataRetriever{
 
 	public List<User> users = new ArrayList<>();
-	
+
 	@Override
 	public User getUser(String userId) {
 		for(User u : users) {

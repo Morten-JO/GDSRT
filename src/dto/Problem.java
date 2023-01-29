@@ -7,7 +7,7 @@ public class Problem {
 	}
 	private int problemId;
 	private ProblemResult problemResult;
-	
+
 	public int getProblemId() {
 		return problemId;
 	}

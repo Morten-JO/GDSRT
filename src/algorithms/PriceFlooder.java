@@ -37,6 +37,6 @@ public class PriceFlooder {
 		}
 		return true;
 	}
-	
-	
+
+
 }

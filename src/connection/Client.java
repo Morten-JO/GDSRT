@@ -20,7 +20,7 @@ public class Client {
 	public ClientConnection getConnection() {
 		return connection;
 	}
-	
+
 	public boolean addMessageToSend(String message) {
 		if (connection != null) {
 			connection.addMessageToSend(message);

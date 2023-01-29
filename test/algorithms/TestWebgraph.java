@@ -25,12 +25,12 @@ import user.User;
 class TestWebgraph {
 
 	private UserController controller;
-	
+
 	private static String TRADER_NAME_A = "A";
 	private static String TRADER_NAME_B = "B";
 	private static String TRADER_NAME_C = "C";
 	private static String TRADER_NAME_D = "D";
-	
+
 	private Trade getTrade(String traderOne, String traderTwo) {
 		Trade trade = new Trade();
 		trade.setTraderOne(traderOne);
@@ -42,7 +42,7 @@ class TestWebgraph {
 		trade.setItemsTwo(new ArrayList<TradeItem>());
 		return trade;
 	}
-	
+
 	@BeforeEach
 	void setup() {
 		controller = new UserController(new TradeController(new TestTradeDataRetriever()), new ItemDataController(new TestItemDataRetriever()), new TestUserDataRetriever(), null);
@@ -55,15 +55,15 @@ class TestWebgraph {
 		((TestUserDataRetriever)controller.getUserDataRetriever()).users.add(c);
 		((TestUserDataRetriever)controller.getUserDataRetriever()).users.add(d);
 	}
-	
+
 	@Test
 	void testWebGraphEmpty() {
 		UserTradeGraph graph = controller.retrieveGraphForUser(TRADER_NAME_A, 4, 0, DetailLevel.ALL);
-		assertTrue(graph.getTrades().size() == controller.getTradeController().getTradesOfUser(TRADER_NAME_A, DetailLevel.ALL).size());;
+		assertTrue(graph.getTrades().size() == controller.getTradeController().getTradesOfUser(TRADER_NAME_A, DetailLevel.ALL).size());
 		assertTrue(graph.getTrades().size() == 0);
 		assertEquals(graph.getOwner(), null);
 	}
-	
+
 	@Test
 	void testWebGraphMainWeb() {
 		List<Trade> trades = new ArrayList<>();
@@ -78,7 +78,7 @@ class TestWebgraph {
 		assertTrue(controller.getTradeController().getAllTrades().size() == trades.size());
 		assertEquals(graph.getOwner(), null);
 	}
-	
+
 	@Test
 	void testWebGraphWithSeveralWebs() {
 		List<Trade> trades = new ArrayList<>();
@@ -86,7 +86,7 @@ class TestWebgraph {
 		trades.add(getTrade(TRADER_NAME_B,TRADER_NAME_C));
 		trades.add(getTrade(TRADER_NAME_C, TRADER_NAME_D));
 		trades.add(getTrade(TRADER_NAME_B, TRADER_NAME_D));
-		((TestUserDataRetriever)controller.getUserDataRetriever()).users.get(1).setCurrentAggroLevel(4);;
+		((TestUserDataRetriever)controller.getUserDataRetriever()).users.get(1).setCurrentAggroLevel(4);
 		((TestTradeDataRetriever)controller.getTradeController().getTradeDataRetriever()).toReturn = trades;
 		UserTradeGraph graph = controller.retrieveGraphForUser(TRADER_NAME_A, 4, 0, DetailLevel.ALL);
 		assertTrue(graph.getTrades().size() == 1);
@@ -104,9 +104,9 @@ class TestWebgraph {
 		assertTrue(graphC.getPoints().size() == 2);
 		assertTrue(graphC.getTradesWithOwner().size() == 1);
 		assertTrue(graphC.getOwner() == graphB);
-		
-		
+
+
 	}
-	
-	
+
+
 }

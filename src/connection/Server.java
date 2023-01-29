@@ -35,11 +35,11 @@ public class Server {
 	public int incomingServerPort;
 
 	private DebugDocumentLogger logger;
-	
+
 	private TradeController tc;
 	private UserController uc;
 	private ItemDataController idc;
-	
+
 	private PrivateKey decryptionKey;
 
 	public Server(TradeController tc, UserController uc, ItemDataController idc) throws IOException {
@@ -50,7 +50,7 @@ public class Server {
 		this.uc = uc;
 		this.idc = idc;
 	}
-	
+
 	public Server(TradeController tc, UserController uc, ItemDataController idc, DebugDocumentLogger logger) throws IOException {
 		incomingServerPort = LoadedConfigs.INCOMING_SERVER_PORT;
 		socket = new ServerSocket(incomingServerPort);
@@ -95,7 +95,7 @@ public class Server {
 			client.removeConnection();
 		}
 	}
-	
+
 	public void newTradeMessage(String msg) {
 		logger.writeLineToFile("New trade message received.");
 		String msgToProcess = msg;
@@ -112,13 +112,13 @@ public class Server {
 		boolean res = tc.addTrade(trade, idc, uc);
 		logger.writeLineToFile("Added trade from tcp to tradeController, response was "+res);
 	}
-	
+
 	public void setDecryptionKey(PrivateKey privateKey) {
 		this.decryptionKey = privateKey;
 	}
-	
+
 	public UserController getUserController() {
 		return uc;
 	}
-	
+
 }

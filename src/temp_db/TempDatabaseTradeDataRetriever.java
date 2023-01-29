@@ -11,11 +11,11 @@ import dto.TradeResult;
 public class TempDatabaseTradeDataRetriever implements ITradeDataRetriever{
 
 	private List<Trade> trades = new ArrayList<>();
-	
+
 	public TempDatabaseTradeDataRetriever() {
-		
+
 	}
-	
+
 	@Override
 	public List<Trade> getAllTrades() throws Exception {
 		return trades;

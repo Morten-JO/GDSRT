@@ -12,14 +12,14 @@ import util.DataTypeHelper;
 public class DatabaseItemDataRetriever implements IItemDataRetriever{
 
 	private final String tableName;
-	
+
 	private DatabaseController dbController;
-	
+
 	public DatabaseItemDataRetriever(DatabaseController dbController) {
 		this.dbController = dbController;
 		this.tableName = "items";
 	}
-	
+
 	@Override
 	public ItemData getItem(String itemId) throws Exception {
 		PreparedStatement statement = dbController.prepareSafeStatement("select * from "+tableName+" where ITEM_ID = ?");

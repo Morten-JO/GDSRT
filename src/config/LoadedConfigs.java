@@ -5,12 +5,12 @@ public class LoadedConfigs {
 	public enum DatabaseType {
 		POSTGRESQL, TEMP
 	}
-	
+
 	public enum ConnectionType {
 		SOCKET
 	}
-	
-	public static DatabaseType DB_TYPE = DatabaseType.POSTGRESQL; 
+
+	public static DatabaseType DB_TYPE = DatabaseType.POSTGRESQL;
 	public static String DB_USER="";
 	public static String DB_HOST="";
 	public static String DB_PASS="";
@@ -20,7 +20,8 @@ public class LoadedConfigs {
 	public static ConnectionType CONNECTION_TYPE  = ConnectionType.SOCKET;
 	public static int INCOMING_SERVER_PORT = 1234;
 	public static boolean ENCRYPTION = false;
+	public static String PRIVATE_KEY_PATH = "";
 	public static boolean FLOOD_PRICES = false;
 	public static String FLOOD_PRICES_PATH = "items.csv";
-	
+
 }

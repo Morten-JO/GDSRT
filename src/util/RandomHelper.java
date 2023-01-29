@@ -8,7 +8,7 @@ public class RandomHelper {
 
 	/**
 	 * from is inclusive to is inclusive
-	 * 
+	 *
 	 * @param from
 	 * @param to
 	 * @return

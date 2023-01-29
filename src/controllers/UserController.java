@@ -2,7 +2,6 @@ package controllers;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.TimerTask;
 import algorithms.TradeAlgorithms;
 import data.UserTradeGraph;
 import data.UserTradeGraph.DetailLevel;
-import data_retrievers.IItemDataRetriever;
 import data_retrievers.ITradeDataRetriever;
 import data_retrievers.IUserDataRetriever;
 import dto.Trade;
@@ -25,7 +23,7 @@ import util.DebugDocumentLogger;
 
 public class UserController extends TimerTask{
 
-	private Map<String, Long> usersRequestedForCheck = new HashMap<String, Long>();
+	private Map<String, Long> usersRequestedForCheck = new HashMap<>();
 	private static Long MIN_DURATION_FOR_CHECK = 5000L;
 	private static Long DURATION_PER_CHECK = 60000L;
 	private TradeController tradeController;
@@ -33,7 +31,7 @@ public class UserController extends TimerTask{
 	private IUserDataRetriever userDataRetriever;
 	private ITradeDataRetriever tradeDataRetriever;
 	private DebugDocumentLogger logger;
-	
+
 	/**
 	 * No userChecksEnabled
 	 * @param tc
@@ -46,7 +44,7 @@ public class UserController extends TimerTask{
 		this.userDataRetriever = userDataRetriever;
 		this.logger = logger;
 	}
-	
+
 	/**
 	 * UserChecksEnabled is true
 	 * @param tc
@@ -62,9 +60,9 @@ public class UserController extends TimerTask{
 		Timer t = new Timer();
 		t.scheduleAtFixedRate(this, DURATION_PER_CHECK, DURATION_PER_CHECK);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Requests to check the user
 	 * @return true if request is added, false if not.
@@ -73,24 +71,21 @@ public class UserController extends TimerTask{
 		if(usersRequestedForCheck.containsKey(userId)) {
 			return false;
 		} else {
-			System.err.println("adding: "+userId);
 			usersRequestedForCheck.put(userId, System.currentTimeMillis());
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void run() {
 		runRequestedChecks();
 	}
-	
+
 	private void runRequestedChecks() {
 		for(Map.Entry<String, Long> entry : usersRequestedForCheck.entrySet()) {
-			System.err.println("processing: "+entry.getKey());
 			if(entry.getValue() + MIN_DURATION_FOR_CHECK > System.currentTimeMillis()) {
 				continue;
 			}
-			System.err.println("we running: "+entry.getKey());
 			try {
 				if(runRequestedCheckOnUser(entry.getKey())) {
 					usersRequestedForCheck.remove(entry.getKey());
@@ -104,15 +99,14 @@ public class UserController extends TimerTask{
 			}
 		}
 	}
-	
+
 	/**
 	 * Logic for running the requestedCheck
 	 * @param userId
 	 * @return false if check is not successfull, true if it was
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private boolean runRequestedCheckOnUser(String userId) throws Exception {
-		System.err.println("PROCESSING USER FOR: "+userId);
 		User user = userDataRetriever.getUser(userId);
 		List<Trade> tradesOfUser = tradeDataRetriever.getTradesOfUser(userId);
 		List<Trade> newTradesProcessed = new ArrayList<>();
@@ -124,7 +118,7 @@ public class UserController extends TimerTask{
 			}
 			LocalTime tradeDate = DateStamper.returnStampedDate(trade.getTradeResult().getTimeStampCalculated());
 			LocalTime currentTime = LocalTime.now();
-			
+
 			if(Duration.between(currentTime, tradeDate).toDays() >= TradeRules.DAYS_FOR_TRADE_TO_EXPIRE) {
 				continue;
 			}
@@ -133,10 +127,7 @@ public class UserController extends TimerTask{
 			if(processedTrade.getTradeResult().getTradeWarningLevel() == trade.getTradeResult().getTradeWarningLevel() && processedTrade.getTradeResult().getTradeCalculated() == trade.getTradeResult().getTradeCalculated()) {
 				continue;
 			}
-			
-			//TODO..UserController.class somewhere here when from trade, add warning something
-			
-			
+
 			newTradesProcessed.add(processedTrade);
 			oldWarningLevel += trade.getTradeResult().getTradeWarningLevel();
 			newWarningLevel += processedTrade.getTradeResult().getTradeWarningLevel();
@@ -151,42 +142,14 @@ public class UserController extends TimerTask{
 			userDataRetriever.updateUserEyeLevel(userId, user.getCurrentAggroLevel());
 			return true;
 		}
-		return false;
+		return true;
 	}
-	
+
 	public UserTradeGraph retrieveGraphForUser(String user, int layers, int warning, UserTradeGraph.DetailLevel detailLevel) {
 		UserTradeGraph graph = retrieveGraphForUserWithWarning(user, layers, warning, new ArrayList<String>(), null, null);
 		return graph;
-		/*UserTradeGraph graph = new UserTradeGraph();
-		graph.setUserId(user);
-		graph.setLayers(layers);
-		List<Trade> tradesOfUser = tradeController.getTradesOfUser(user, detailLevel);
-		List<UserTradeGraph> tradePoints = new ArrayList<>();
-		List<String> users = getListOfUsersFromTrades(tradesOfUser, user);
-		for(String u : users) {
-			User childUser = getUser(u);
-			if(childUser == null) {
-				continue;
-			}
-			UserTradeGraph childGraph = new UserTradeGraph();
-			childGraph.setOwner(graph);
-			List<Trade> childTradesWithOwner = new ArrayList<>();
-			for(Trade trade : tradesOfUser) {
-				if(trade.getTraderOne().equals(u) || trade.getTraderTwo().equals(u)) {
-					childTradesWithOwner.add(trade);
-				}
-			}
-			childGraph.setTradesWithOwner(childTradesWithOwner);
-			childGraph.setUserId(childUser.getUserIdentification());
-			childGraph.setWarningLevel(childUser.getCurrentAggroLevel());
-			tradePoints.add(childGraph);
-			
-		}
-		graph.setTrades(tradesOfUser);
-		graph.setPoints(tradePoints);
-		return graph;*/
 	}
-	
+
 	private UserTradeGraph retrieveGraphForUserWithWarning(String user, int layers, int warning, List<String> traversed, UserTradeGraph owner, List<Trade> childTradesWithOwner) {
 		if(traversed.contains(user)) {
 			return null;
@@ -199,18 +162,15 @@ public class UserController extends TimerTask{
 		graph.setWarningLevel(warning);
 		graph.setOwner(owner);
 		graph.setTradesWithOwner(childTradesWithOwner);
-		
+
 		List<Trade> tradesOfUser = tradeController.getTradesOfUser(user, DetailLevel.HIGHWARNING);
 		List<UserTradeGraph> tradePoints = new ArrayList<>();
 		List<String> users = getListOfUsersFromTrades(tradesOfUser, user, warning);
-		System.out.println("Users: "+users);
 		for(String u : users) {
-			System.out.println("Cawk?");
 			User childUser = getUser(u);
 			if(childUser == null) {
 				continue;
 			}
-			System.out.println("Here..");
 			List<Trade> childTrades = new ArrayList<>();
 			for(Trade trade : tradesOfUser) {
 				if(trade.getTradeResult().getTradeWarningLevel() >= warning) {
@@ -219,11 +179,9 @@ public class UserController extends TimerTask{
 					}
 				}
 			}
-			System.out.println("Yo?");
 			if(layers > 0) {
 				UserTradeGraph childGraph = retrieveGraphForUserWithWarning(u, layers-1, warning, traversed, owner, childTrades);
 				if(childGraph != null) {
-					System.out.println("Questionmark");
 					tradePoints.add(childGraph);
 				}
 			}
@@ -232,9 +190,9 @@ public class UserController extends TimerTask{
 		graph.setPoints(tradePoints);
 		return graph;
 
-		
+
 	}
-	
+
 	public UserTradeGraph lookAtPointFromUserTradeGraph(UserTradeGraph orig, String userId, UserTradeGraph.DetailLevel detailLevel) {
 		User user = getUser(userId);
 		if(user == null){
@@ -262,13 +220,13 @@ public class UserController extends TimerTask{
 			childGraph.setUserId(childUser.getUserIdentification());
 			childGraph.setWarningLevel(childUser.getCurrentAggroLevel());
 			tradePoints.add(childGraph);
-			
+
 		}
 		orig.setTrades(tradesOfUser);
 		orig.setPoints(tradePoints);
 		return orig;
 	}
-	
+
 	private User getUser(String userId) {
 		try {
 			return userDataRetriever.getUser(userId);
@@ -276,13 +234,10 @@ public class UserController extends TimerTask{
 			return null;
 		}
 	}
-	
+
 	private List<String> getListOfUsersFromTrades(List<Trade> trades, String originalTrader){
 		List<String> users = new ArrayList<>();
-		if(trades == null) {
-			return users;
-		}
-		if(trades.size() == 0) {
+		if((trades == null) || (trades.size() == 0)) {
 			return users;
 		}
 		for(Trade trade: trades) {
@@ -298,13 +253,10 @@ public class UserController extends TimerTask{
 		}
 		return users;
 	}
-	
+
 	private List<String> getListOfUsersFromTrades(List<Trade> trades, String originalTrader, int warningLevel){
 		List<String> users = new ArrayList<>();
-		if(trades == null) {
-			return users;
-		}
-		if(trades.size() == 0) {
+		if((trades == null) || (trades.size() == 0)) {
 			return users;
 		}
 		for(Trade trade: trades) {
@@ -327,15 +279,15 @@ public class UserController extends TimerTask{
 		}
 		return users;
 	}
-	
+
 	public TradeController getTradeController() {
 		return tradeController;
 	}
-	
+
 	public IUserDataRetriever getUserDataRetriever() {
 		return userDataRetriever;
 	}
-	
+
 	public boolean userExists(String name) {
 		try {
 			return userDataRetriever.userExists(name);
@@ -344,7 +296,7 @@ public class UserController extends TimerTask{
 			return false;
 		}
 	}
-	
+
 	public boolean createNewUser(String name) {
 		try {
 			if(!userDataRetriever.userExists(name)) {
@@ -354,7 +306,7 @@ public class UserController extends TimerTask{
 			e.printStackTrace();
 		}
 		return false;
-		
+
 	}
-	
+
 }

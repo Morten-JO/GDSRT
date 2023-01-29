@@ -16,14 +16,14 @@ import util.DataTypeHelper;
 public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 
 	private final String tableName;
-	
+
 	private DatabaseController dbController;
-	
+
 	public DatabaseTradeDataRetriever(DatabaseController dbController) {
 		this.dbController = dbController;
 		this.tableName = "trades";
 	}
-	
+
 	@Override
 	public List<Trade> getAllTrades() throws SQLException {
 		PreparedStatement statement = dbController.prepareSafeStatement("select * from " + dbController.getDatabaseName() + "."+tableName);
@@ -80,7 +80,7 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 		if(tradeExists(tradeId)) {
 			return false;
 		}
-		
+
 		//" + dbController.getDatabaseName() + "."+
 		PreparedStatement statement = dbController.prepareSafeStatement("insert into "+tableName+" (TRADE_ID, TRADER_ONE_ID, TRADER_TWO_ID, ITEMS_ONE, ITEMS_TWO, TRADE_CALCULATED, TRADE_MIN_DIFF, TRADE_MED_DIFF, TRADE_MAX_DIFF, TRADE_WARNING_LEVEL, TIME_STAMP, CHECK_SUM, ADD_DATA) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		statement.setString(1, tradeId);
@@ -136,10 +136,10 @@ public class DatabaseTradeDataRetriever implements ITradeDataRetriever {
 		} catch (SQLException e) {
 			return false;
 		}
-		
+
 		return false;
 	}
-	
+
 	private Trade setToTrade(ResultSet set) throws SQLException {
 		Trade trade = new Trade();
 		trade.setTradeId(set.getString(1));

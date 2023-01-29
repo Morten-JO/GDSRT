@@ -18,7 +18,7 @@ import config.LoadedConfigs;
 public class FileUtil {
 
 	private static final String CONFIG_LOCATION = "res/config.properties";
-	
+
 	public static boolean loadConfigs() {
 		try {
             FileInputStream propsInput = new FileInputStream(CONFIG_LOCATION);
@@ -32,6 +32,7 @@ public class FileUtil {
             LoadedConfigs.STRICTNESS_LEVEL = Integer.valueOf(prop.getProperty("STRICTNESS_LEVEL"));
             LoadedConfigs.CONNECTION_TYPE = LoadedConfigs.ConnectionType.valueOf(prop.getProperty("CONNECTION_TYPE").toUpperCase());
             LoadedConfigs.ENCRYPTION = Boolean.valueOf(prop.getProperty("ENCRYPTION"));
+            LoadedConfigs.PRIVATE_KEY_PATH = prop.getProperty("PRIVATE_KEY_PATH");
             LoadedConfigs.FLOOD_PRICES = Boolean.valueOf(prop.getProperty("FLOOD_ITEMS"));
             LoadedConfigs.FLOOD_PRICES_PATH = prop.getProperty("FLOOD_ITEMS_PATH");
             LoadedConfigs.INCOMING_SERVER_PORT = Integer.valueOf(prop.getProperty("SERVER_PORT"));
@@ -42,7 +43,7 @@ public class FileUtil {
         }
 		return false;
 	}
-	
+
 	public static List<List<String>> readCSVFile(String path) throws IOException {
 		File file = new File(path);
 		if(!file.exists()) {
@@ -59,7 +60,7 @@ public class FileUtil {
 		}
 		return records;
 	}
-	
+
 	public static Map<String, Float> readItemFloodCSVFile(String path){
 		Map<String, Float> map = new HashMap<>();
 		try {
@@ -81,6 +82,6 @@ public class FileUtil {
 			return null;
 		}
 	}
-	
-	
+
+
 }

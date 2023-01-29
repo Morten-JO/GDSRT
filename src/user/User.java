@@ -9,7 +9,7 @@ public class User {
 	private String userIdentification;
 	private int currentAggroLevel;
 	private Map<String, String> additionalData;
-	
+
 	public User(String userIdentification, int currentAggroLevel, String additionalData) {
 		this.userIdentification = userIdentification;
 		this.currentAggroLevel = currentAggroLevel;

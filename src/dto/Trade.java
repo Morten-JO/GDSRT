@@ -10,11 +10,11 @@ public class Trade {
 	private String traderTwo;
 	private List<TradeItem> itemsOne; //Maybe it should be Object Item(ItemName/ItemId and quantity)
 	private List<TradeItem> itemsTwo;
-	
+
 	private TradeResult tradeResult;
 
 	public Trade() {
-		
+
 	}
 	public Trade(Trade toCopy) {
 		this.tradeId = toCopy.tradeId;
@@ -23,7 +23,7 @@ public class Trade {
 		this.itemsOne = toCopy.itemsOne;
 		this.itemsTwo = toCopy.itemsTwo;
 	}
-	
+
 	public String getTradeId() {
 		return tradeId;
 	}
@@ -71,15 +71,15 @@ public class Trade {
 	public void setTradeResult(TradeResult tradeResult) {
 		this.tradeResult = tradeResult;
 	}
-	
+
 	public List<TradeItem> getBothTradeItems(){
 		List<TradeItem> list = new ArrayList<>();
 		list.addAll(itemsOne);
 		list.addAll(itemsTwo);
 		return list;
 	}
-	
-	
-	
-	
+
+
+
+
 }

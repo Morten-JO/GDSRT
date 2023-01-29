@@ -10,11 +10,11 @@ import util.AdditionalDataConverter;
 public class TempDatabaseUserDataRetriever implements IUserDataRetriever{
 
 	private List<User> listOfUsers = new ArrayList<>();
-	
+
 	public TempDatabaseUserDataRetriever() {
-		
+
 	}
-	
+
 	@Override
 	public User getUser(String userId) throws Exception {
 		System.out.println("all users: "+listOfUsers);

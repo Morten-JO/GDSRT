@@ -26,14 +26,14 @@ public class TestTradeAlgorithm {
 	private ItemDataController itemDataController;
 	private IItemDataRetriever idr;
 	private UserController userController;
-	
+
 	@BeforeEach
 	void setup() {
 		idr = new TestItemDataRetriever();
 		itemDataController = new ItemDataController(idr);
 		userController = new UserController(null, itemDataController, new TestUserDataRetriever(), null);
 	}
-	
+
 	private Trade performStandardTrade(int quantityOne, int quantityTwo) {
 		Trade trade = new Trade();
 		trade.setTradeId("abc");
@@ -48,7 +48,7 @@ public class TestTradeAlgorithm {
 		Trade returnedTrade = TradeAlgorithms.processTrade(trade, itemDataController, userController, true);
 		return returnedTrade;
 	}
-	
+
 	@Test
 	void testTradeProcessedFirstTradeItems() throws Exception {
 		Trade returnedTrade = performStandardTrade(1,2);
@@ -57,12 +57,12 @@ public class TestTradeAlgorithm {
 		ItemData dataTwo = idr.getItem("itemTwo");
 		assertTrue(dataTwo != null);
 		assertEquals(50f, dataTwo.getEstimatedPrice().getMedianPrice());
-		
+
 		ItemData dataOne = idr.getItem("itemOne");
 		assertTrue(dataOne != null);
 		assertEquals(100f, dataOne.getEstimatedPrice().getMedianPrice());
 	}
-	
+
 	@Test
 	void testTradeProcessedTwiceTradeItems() throws Exception {
 		performStandardTrade(1,2);
@@ -71,12 +71,12 @@ public class TestTradeAlgorithm {
 		ItemData dataTwo = idr.getItem("itemTwo");
 		assertTrue(dataTwo != null);
 		assertEquals(50f, dataTwo.getEstimatedPrice().getMedianPrice());
-		
+
 		ItemData dataOne = idr.getItem("itemOne");
 		assertTrue(dataOne != null);
 		assertEquals(100f, dataOne.getEstimatedPrice().getMedianPrice());
 	}
-	
+
 	@Test
 	void testTradeProcessedMultipleTradeItems() throws Exception {
 		for(int i = 0; i < 10; i++) {
@@ -87,12 +87,12 @@ public class TestTradeAlgorithm {
 		ItemData dataTwo = idr.getItem("itemTwo");
 		assertTrue(dataTwo != null);
 		assertEquals(50f, dataTwo.getEstimatedPrice().getMedianPrice());
-		
+
 		ItemData dataOne = idr.getItem("itemOne");
 		assertTrue(dataOne != null);
 		assertEquals(100f, dataOne.getEstimatedPrice().getMedianPrice());
 	}
-	
+
 	@Test
 	void testTradeProcessedAdjustingPrice() throws Exception {
 		Random rand = new Random();
@@ -111,7 +111,7 @@ public class TestTradeAlgorithm {
 		ItemData dataOne = idr.getItem("itemOne");
 		assertTrue(dataTwo != null);
 		assertTrue(ValueUtil.isAroundEqual(dataOne.getEstimatedPrice().getMedianPrice(), dataTwo.getEstimatedPrice().getMedianPrice()*3f, 0.5f));
-		
+
 	}
-	
+
 }

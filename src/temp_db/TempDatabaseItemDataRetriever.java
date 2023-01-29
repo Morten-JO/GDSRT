@@ -11,11 +11,11 @@ import dto.Percentage;
 public class TempDatabaseItemDataRetriever implements IItemDataRetriever{
 
 	private Map<String, ItemData> mapOfData;
-	
+
 	public TempDatabaseItemDataRetriever() {
 		mapOfData = new HashMap<>();
 	}
-	
+
 	@Override
 	public ItemData getItem(String itemId) throws Exception {
 		if(mapOfData.containsKey(itemId)) {

@@ -7,17 +7,17 @@ import dto.Percentage;
 public class ItemDataController {
 
 	private IItemDataRetriever idr;
-	
+
 	public ItemDataController(IItemDataRetriever idr) {
 		this.idr = idr;
 	}
-	
+
 	/**
 	 * Can only be called when loadedItemDataMap is here
 	 * @param itemId
 	 * @param value
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public ItemData addItem(String itemId, float value, Percentage itemCertaintyPercentage) throws Exception {
 		if(idr.itemExists(itemId)) {
@@ -45,11 +45,11 @@ public class ItemDataController {
 			}
 		}
 	}
-	
+
 	public boolean increaseTotalTrades(String itemId) throws Exception {
 		return idr.incrementTotalTrades(itemId);
 	}
-	
+
 	public ItemData getItem(String itemId) {
 		try {
 			return idr.getItem(itemId);

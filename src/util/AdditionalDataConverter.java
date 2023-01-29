@@ -19,7 +19,7 @@ public class AdditionalDataConverter {
 		}
 		return map;
 	}
-	
+
 	public static String mapToString(Map<String, String> map) {
 		String str = "";
 		boolean first = true;
@@ -33,5 +33,5 @@ public class AdditionalDataConverter {
 		}
 		return str;
 	}
-	
+
 }

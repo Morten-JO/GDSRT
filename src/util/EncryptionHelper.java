@@ -28,7 +28,7 @@ public class EncryptionHelper {
 		byte[] encryptedBytes = encryptCipher.doFinal(msgToBytes);
 		return Base64.getEncoder().encodeToString(encryptedBytes);
 	}
-	
+
 	public static String decryptMsgWithPrivateKey(String msg, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		Cipher decryptCipher = Cipher.getInstance("RSA");
 		decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -36,7 +36,7 @@ public class EncryptionHelper {
 		byte[] decryptedBytes = decryptCipher.doFinal(msgToBytes);
 		return Base64.getEncoder().encodeToString(decryptedBytes);
 	}
-	
+
 	public static PublicKey getKeyFileToPublicKey(File keyFile) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
 		byte[] keyBytes = Files.readAllBytes(keyFile.toPath());
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
@@ -44,4 +44,11 @@ public class EncryptionHelper {
 		return keyFactory.generatePublic(pkSpec);
 	}
 	
+	public static PrivateKey getKeyFileToPrivateKey(File keyFile) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+		byte[] keyBytes = Files.readAllBytes(keyFile.toPath());
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		EncodedKeySpec pkSpec = new X509EncodedKeySpec(keyBytes);
+		return keyFactory.generatePrivate(pkSpec);
+	}
+
 }

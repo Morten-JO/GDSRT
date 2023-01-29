@@ -9,7 +9,7 @@ public class UserTradeGraph {
 	public enum DetailLevel{
 		ALL,MEDIUMWARNING,HIGHWARNING
 	}
-	
+
 	private UserTradeGraph owner;
 	private List<Trade> tradesWithOwner;
 	private String userId;
@@ -17,8 +17,8 @@ public class UserTradeGraph {
 	private List<UserTradeGraph> points;
 	private List<Trade> trades;
 	private int warningLevel;
-	
-	
+
+
 	public String getUserId() {
 		return userId;
 	}
