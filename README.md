@@ -32,7 +32,7 @@ same network as the service feeding it data. This not only makes the exchange ve
 ### Guide  
 A guide for making a connection to the service can be found on the client libaries repository: https://github.com/Morten-JO/GDSRT-C  
 
-##Currently implemented:  
+## Currently implemented:  
   - Web graph report export - Retrieve a .json file of a specific requested user, tracking suspicious trades related to that user, filtered by a warning level.  
   - Algorithm for checking a trade for potenial issues  
   - Routine checks on users, updating their warning level, if suspicious activity is found  
