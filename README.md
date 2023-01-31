@@ -24,7 +24,8 @@ First of all, the service has a config.properties file that needs to be defined 
 - SERVER_PORT=1234 - Port of the server  
 - ENCRYPTION=false - Whether or not to enable encryption  
 - PRIVATE_KEY_PATH=key - Location on system to where the private key is located (if enabled)  
-**It should be noted that using encryption is not recommended, as the data it processes is not very vulnerable, and the service is meant to be containerized and running locally on the same network as the connecting service. Furthermore, only the Java version of the client supports encryption currently.**  
+**It should be noted that using encryption is not recommended, as the data it processes is not very vulnerable, and the service is meant to be containerized and running locally on the same network as the connecting service. Furthermore, only the Java version of the client supports encryption currently.  
+A keypair can be generated on https://cryptotools.net/rsagen**  
 - FLOOD_ITEMS=true|false - Whether or not to inject prices of items into the service.  
 - FLOOD_ITEMS_PATH=items.csv - Location on system to where the price of items is located (if enabled)  
 **File is .csv, with data being given as: itemname,price**  
