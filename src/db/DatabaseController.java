@@ -166,14 +166,13 @@ public class DatabaseController {
 			PreparedStatement statement = connect.prepareStatement(val);
 			return statement;
 		} catch (SQLNonTransientConnectionException e) {
-			System.err.println("databaseConnection is stale, trying to make a new connection");
+			System.err.println("DatabaseConnection is stale, trying to make a new connection");
 			documentLogger.writeLineToFile("databaseConnection is stale, trying to make a new connection");
 			try {
 				connect = DriverManager.getConnection(databaseUrl, databaseUsername, databasePassword);
-				documentLogger.writeLineToFile("success in making a new database connection");
+				documentLogger.writeLineToFile("Success in making a new database connection");
 				return connect.prepareStatement(val);
 			} catch (SQLException e1) {
-				System.err.println("FATAL ERROR; couldn't etablish a new connection from stale");
 				documentLogger.writeLineToFile("FATAL ERROR; couldn't etablish a new connection from stale");
 				e1.printStackTrace();
 			}

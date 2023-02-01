@@ -95,7 +95,7 @@ public class UserController extends TimerTask{
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.err.println("Failed to perform check... Adding time and doing it again");
+				System.err.println("Failed to perform check... Adding time.");
 				entry.setValue(System.currentTimeMillis());
 			}
 		}
@@ -181,7 +181,7 @@ public class UserController extends TimerTask{
 				}
 			}
 			if(layers > 0) {
-				UserTradeGraph childGraph = retrieveGraphForUserWithWarning(u, layers-1, warning, traversed, owner, childTrades);
+				UserTradeGraph childGraph = retrieveGraphForUserWithWarning(u, layers-1, warning, traversed, graph, childTrades);
 				if(childGraph != null) {
 					tradePoints.add(childGraph);
 				}

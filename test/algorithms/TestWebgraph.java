@@ -92,18 +92,18 @@ class TestWebgraph {
 		assertTrue(graph.getTrades().size() == 1);
 		assertTrue(graph.getPoints().size() == 1);
 		assertTrue(graph.getPoints().get(0).getUserId().equals(TRADER_NAME_B));
-		assertTrue(graph.getPoints().get(0).getOwner() == graph);
+		assertEquals(graph.getPoints().get(0).getOwner().getUserId(), TRADER_NAME_A);
 		UserTradeGraph graphB = controller.lookAtPointFromUserTradeGraph(graph.getPoints().get(0), TRADER_NAME_B, DetailLevel.ALL);
 		assertTrue(graphB.getTrades().size() == 3);
 		assertTrue(graphB.getPoints().size() == 3);
 		assertTrue(graphB.getTradesWithOwner().size() == 1);
-		assertTrue(graphB.getOwner() == graph);
+		assertEquals(graphB.getUserId(), TRADER_NAME_B);
 		assertTrue(graphB.getWarningLevel() == 4);
 		UserTradeGraph graphC = controller.lookAtPointFromUserTradeGraph(graphB.getPoints().get(0), TRADER_NAME_C, DetailLevel.ALL);
 		assertTrue(graphC.getTrades().size() == 2);
 		assertTrue(graphC.getPoints().size() == 2);
 		assertTrue(graphC.getTradesWithOwner().size() == 1);
-		assertTrue(graphC.getOwner() == graphB);
+		assertEquals(graphC.getUserId(), TRADER_NAME_C);
 
 
 	}

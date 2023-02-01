@@ -17,7 +17,6 @@ public class TempDatabaseUserDataRetriever implements IUserDataRetriever{
 
 	@Override
 	public User getUser(String userId) throws Exception {
-		System.out.println("all users: "+listOfUsers);
 		for(User user : listOfUsers) {
 			if(user.getUserIdentification().equals(userId)) {
 				return user;
@@ -50,7 +49,6 @@ public class TempDatabaseUserDataRetriever implements IUserDataRetriever{
 
 	@Override
 	public boolean addUser(String userId, int eyeLevel, String additionalData) throws Exception {
-		System.out.println("Any add users or ");
 		User user = new User(userId, eyeLevel, additionalData);
 		listOfUsers.add(user);
 		return true;

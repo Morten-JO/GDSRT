@@ -78,7 +78,6 @@ public class TradeAlgorithms {
 		boolean tradeNulled = false;
 		int totalItems = trade.getItemsOne().size() + trade.getItemsTwo().size();
 		if(totalItems / 3.0f < itemsNotRegistered) {
-			System.out.println("Trade nulled: "+totalItems+" and: "+itemsNotRegistered);
 			tradeNulled = true;
 		}
 		int pricePerItemOne = 0;
@@ -105,7 +104,6 @@ public class TradeAlgorithms {
 			for(TradeItem item : tradeOneNotRegistered) {
 				int itemValue = averagePricePerItem / item.getQuantity();
 				try {
-					System.err.println("We arent registering right 1");
 					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -114,7 +112,6 @@ public class TradeAlgorithms {
 			for(TradeItem item : tradeTwoNotRegistered) {
 				int itemValue = averagePricePerItem / item.getQuantity();
 				try {
-					System.err.println("We arent registering right 2");
 					itemDataController.addItem(item.getItemId(), itemValue, new Percentage(0));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -209,7 +206,6 @@ public class TradeAlgorithms {
 						percentage = new Percentage(0);
 					}
 					if(updateData && itemsTwoCount > 0 && itemsOneCount > 0) {
-						System.err.println("Adding pricev2..."+itemsOneCount+" and "+itemsTwoCount);
 						itemDataController.addItem(item.getItemId(), newValue, percentage);
 					}
 				} catch (Exception e) {
@@ -265,7 +261,6 @@ public class TradeAlgorithms {
 						percentage = new Percentage(0);
 					}
 					if(updateData && itemsTwoCount > 0 && itemsOneCount > 0) {
-						System.err.println("Adding price..."+itemsOneCount+" and "+itemsTwoCount);
 						itemDataController.addItem(item.getItemId(), newValue, percentage);
 					}
 				} catch (Exception e) {
@@ -286,7 +281,6 @@ public class TradeAlgorithms {
 			}
 		}
 
-		System.out.println("Result warning level is: "+result.getTradeWarningLevel());
 		if(result.getTradeWarningLevel() > 5 && updateData) {
 			System.out.println("Triggering check for: "+trade.getTraderOne()+" and "+trade.getTraderTwo());
 			userController.requestUserCheck(trade.getTraderOne());

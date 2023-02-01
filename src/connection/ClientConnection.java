@@ -60,7 +60,6 @@ public class ClientConnection extends Connection {
 
 	@Override
 	protected void handleInput(String input) {
-		System.out.println("Received: "+input);
 		count = System.currentTimeMillis(); // Resetting keep alive since a
 											// message was received.
 		if (input.startsWith("PING")) {

@@ -99,8 +99,9 @@ public class TestTradeAlgorithm {
 		performStandardTrade(1, 2);
 		rand.setSeed(System.currentTimeMillis());
 		for(int i = 0; i < 100; i++) {
-			int quantityOne = rand.nextInt(1, 100);
-			int quantityTwo = rand.nextInt(500, 5800);
+			
+			int quantityOne = rand.nextInt(100) + 1;
+			int quantityTwo = rand.nextInt(5800) + 500;
 			performStandardTrade(quantityOne,quantityTwo);
 		}
 		//Perform different value trading

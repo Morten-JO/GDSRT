@@ -10,7 +10,7 @@ public class LoadedConfigs {
 		SOCKET
 	}
 
-	public static DatabaseType DB_TYPE = DatabaseType.POSTGRESQL;
+	public static DatabaseType DB_TYPE = DatabaseType.TEMP;
 	public static String DB_USER="";
 	public static String DB_HOST="";
 	public static String DB_PASS="";
