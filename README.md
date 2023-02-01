@@ -31,7 +31,7 @@ A keypair can for example be generated on https://cryptotools.net/rsagen**
 **File is .csv, with data being given as: itemname,price**  
 
 ### Running  
-This can be deployed by compiling the compile into a jar file yourself or running the jar provided in the latest stable release, or running the project itself directly.  
+This can be deployed by compiling the compile into a jar file yourself or running the jar provided in the latest stable release, or running the project itself directly. The structure of the file environment is specified in the latest release.
 This service is meant to be containerized if taken into use, and not just testing. Ideally this would be ran using docker, and be on the  
 same network as the service feeding it data. This not only makes the exchange very simple, but also removes any possible security concerns.  
 
